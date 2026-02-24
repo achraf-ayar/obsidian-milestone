@@ -1,8 +1,10 @@
 
+import { Notice } from "obsidian";
+
 import { uid } from "../utils/uid";
-import { formGroup, trapEscape } from "../utils/dom";
+import { formGroup, trapEscape, randomColor } from "../utils/dom";
 import { TagInput } from "../components/TagInput";
-import { BoardData, BoardTask } from "../src/types";
+import { BoardData, BoardTask, BoardUser, BoardMilestone } from "../src/types";
 
 // Task Modal
 
@@ -107,6 +109,40 @@ export function openTaskModal(
     if (u.name === task?.assignee) opt.selected = true;
     assignSel.appendChild(opt);
   });
+  const createUserOpt = document.createElement("option");
+  createUserOpt.value = "__create_new__";
+  createUserOpt.textContent = "➕ Create new user...";
+  assignSel.appendChild(createUserOpt);
+  
+  assignSel.addEventListener("change", () => {
+    if (assignSel.value === "__create_new__") {
+      const username = prompt("Enter username (e.g., @john):");
+      if (username) {
+        let name = username.trim();
+        if (!name.startsWith("@")) name = "@" + name;
+        if (data.users.find((u) => u.name === name)) {
+          new Notice("User already exists.");
+          assignSel.value = task?.assignee ?? "";
+          return;
+        }
+        const newUser: BoardUser = {
+          id: uid(),
+          name,
+          color: randomColor(),
+          initials: name.slice(1, 3).toUpperCase(),
+        };
+        data.users.push(newUser);
+        const opt = document.createElement("option");
+        opt.value = newUser.name;
+        opt.textContent = newUser.name;
+        opt.selected = true;
+        assignSel.insertBefore(opt, createUserOpt);
+        assignSel.value = newUser.name;
+      } else {
+        assignSel.value = task?.assignee ?? "";
+      }
+    }
+  });
   row2.appendChild(formGroup("Assignee", assignSel));
 
   const mileSel = document.createElement("select");
@@ -124,6 +160,43 @@ export function openTaskModal(
       if (m.name === task?.milestone) opt.selected = true;
       mileSel.appendChild(opt);
     });
+  const createMileOpt = document.createElement("option");
+  createMileOpt.value = "__create_new__";
+  createMileOpt.textContent = "➕ Create new milestone...";
+  mileSel.appendChild(createMileOpt);
+  
+  mileSel.addEventListener("change", () => {
+    if (mileSel.value === "__create_new__") {
+      const name = prompt("Enter milestone name (e.g., M4):");
+      if (name) {
+        const milestoneName = name.trim();
+        if (data.milestones.find((m) => m.name === milestoneName)) {
+          new Notice("Milestone already exists.");
+          mileSel.value = task?.milestone ?? "";
+          return;
+        }
+        const label = prompt("Enter milestone label (e.g., Launch):");
+        const maxOrder = data.milestones.reduce((max, m) => Math.max(max, m.order), 0);
+        const newMilestone: BoardMilestone = {
+          id: uid(),
+          name: milestoneName,
+          label: label?.trim() || milestoneName,
+          color: randomColor(),
+          order: maxOrder + 1,
+          dueDate: "",
+        };
+        data.milestones.push(newMilestone);
+        const opt = document.createElement("option");
+        opt.value = newMilestone.name;
+        opt.textContent = `${newMilestone.name} — ${newMilestone.label}`;
+        opt.selected = true;
+        mileSel.insertBefore(opt, createMileOpt);
+        mileSel.value = newMilestone.name;
+      } else {
+        mileSel.value = task?.milestone ?? "";
+      }
+    }
+  });
   row2.appendChild(formGroup("Milestone", mileSel));
   body.appendChild(row2);
 
