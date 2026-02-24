@@ -60,13 +60,7 @@ function buildUserRow(
 		<div class="ms-item-name">${user.name}</div>
 		<div class="ms-item-sub">${taskCount} task${taskCount !== 1 ? "s" : ""} assigned</div>
 	`;
-  row.appendChild(info);
-
-  // Buttons
-  const btns = document.createElement("div");
-  btns.className = "ms-item-btns";
-
-  // Colour picker
+  // Colour picker (placed before info so popup opens rightward)
   const colorInput = document.createElement("input");
   colorInput.type = "color";
   colorInput.value = user.color;
@@ -77,7 +71,13 @@ function buildUserRow(
     avatar.style.background = colorInput.value;
     onUpdate({ ...data });
   });
-  btns.appendChild(colorInput);
+  row.appendChild(colorInput);
+
+  row.appendChild(info);
+
+  // Buttons
+  const btns = document.createElement("div");
+  btns.className = "ms-item-btns";
 
   // Delete button
   const delBtn = document.createElement("button");
@@ -105,17 +105,17 @@ function buildAddUserForm(
   const nameRow = document.createElement("div");
   nameRow.className = "ms-row";
 
-  const nameInput = document.createElement("input");
-  nameInput.className = "ms-small-input";
-  nameInput.placeholder = "Username  (e.g. @john)";
-  nameRow.appendChild(nameInput);
-
   const colorPick = document.createElement("input");
   colorPick.type = "color";
   colorPick.value = randomColor();
   colorPick.className = "ms-color-swatch";
   colorPick.title = "Pick colour";
   nameRow.appendChild(colorPick);
+
+  const nameInput = document.createElement("input");
+  nameInput.className = "ms-small-input";
+  nameInput.placeholder = "Username  (e.g. @john)";
+  nameRow.appendChild(nameInput);
   form.appendChild(nameRow);
 
   const addBtn = document.createElement("button");

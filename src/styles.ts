@@ -159,7 +159,7 @@ export const STYLES = `
     width: 340px; min-width: 340px;
     border-left: 1px solid var(--background-modifier-border);
     background: var(--background-secondary);
-    display: flex; flex-direction: column; overflow-y: hidden; overflow-x: visible;
+    display: flex; flex-direction: column; overflow-y: hidden;
     animation: msPanelIn 0.2s ease;
   }
   @keyframes msPanelIn {
@@ -173,7 +173,7 @@ export const STYLES = `
   }
   .ms-panel-title { font-size: 13px; font-weight: 700; color: var(--text-normal); }
   .ms-panel-body {
-    flex: 1; overflow-y: auto; overflow-x: visible; padding: 14px 16px;
+    flex: 1; overflow-y: auto; padding: 14px 16px;
     display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin;
   }
   .ms-section-label {
@@ -242,16 +242,11 @@ export const STYLES = `
     width: 32px; height: 32px; border-radius: 6px;
     border: 2px solid var(--background-modifier-border);
     cursor: pointer; flex-shrink: 0; transition: border-color 0.15s;
-    padding: 2px; position: relative;
+    padding: 2px;
   }
   .ms-color-swatch:hover { border-color: var(--color-accent); }
-  .ms-color-swatch::-webkit-color-swatch-wrapper {
-    padding: 0;
-  }
-  .ms-color-swatch::-webkit-color-swatch {
-    border: none;
-    border-radius: 4px;
-  }
+  .ms-color-swatch::-webkit-color-swatch-wrapper { padding: 0; }
+  .ms-color-swatch::-webkit-color-swatch { border: none; border-radius: 4px; }
 
   /* Modal */
   .ms-overlay {

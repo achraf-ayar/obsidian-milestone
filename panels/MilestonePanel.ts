@@ -145,12 +145,7 @@ function buildMilestoneRow(
   progText.textContent = `${taskDone}/${taskTotal} done (${pct}%)`;
   info.appendChild(progText);
 
-  row.appendChild(info);
-
-  // Buttons
-  const btns = document.createElement("div");
-  btns.className = "ms-item-btns";
-
+  // Color picker (placed before info so popup opens rightward)
   const colorInput = document.createElement("input");
   colorInput.type = "color";
   colorInput.value = mile.color;
@@ -162,7 +157,13 @@ function buildMilestoneRow(
     progFill.style.background = colorInput.value;
     onUpdate({ ...data });
   });
-  btns.appendChild(colorInput);
+  row.appendChild(colorInput);
+
+  row.appendChild(info);
+
+  // Buttons
+  const btns = document.createElement("div");
+  btns.className = "ms-item-btns";
 
   const editBtn = document.createElement("button");
   editBtn.className = "ms-icon-btn";
@@ -215,16 +216,16 @@ function buildAddMilestoneForm(
 
   const row2 = document.createElement("div");
   row2.className = "ms-row";
-  const dueInput = document.createElement("input");
-  dueInput.type = "date";
-  dueInput.className = "ms-small-input";
-  dueInput.title = "Due date (optional)";
   const colorPick = document.createElement("input");
   colorPick.type = "color";
   colorPick.value = randomColor();
   colorPick.className = "ms-color-swatch";
-  row2.appendChild(dueInput);
+  const dueInput = document.createElement("input");
+  dueInput.type = "date";
+  dueInput.className = "ms-small-input";
+  dueInput.title = "Due date (optional)";
   row2.appendChild(colorPick);
+  row2.appendChild(dueInput);
   form.appendChild(row2);
 
   const addBtn = document.createElement("button");
