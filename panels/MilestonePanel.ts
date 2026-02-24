@@ -1,3 +1,4 @@
+import { Notice } from "obsidian";
 
 import { uid } from "../utils/uid";
 import { openMilestoneEditModal } from "../modals/MilestoneEditModal";

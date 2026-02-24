@@ -1,9 +1,10 @@
-
+import { Plugin, WorkspaceLeaf } from "obsidian";
 
 // Plugin Entry Point
 
 import { BoardView } from "./boardView";
 import { MilestoneSettings, VIEW_TYPE, DEFAULT_SETTINGS } from "./constants";
+import { MilestoneSettingTab } from "./settings";
 
 export default class MilestoneBoardPlugin extends Plugin {
   settings: MilestoneSettings;
