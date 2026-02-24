@@ -5,22 +5,6 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 
 ---
 
-## Screenshots
-
-### Kanban Board View
-![Kanban Board](screenshots/screenshots1.png)
-
-### Task Creation Modal
-![Task Modal](screenshots/screenshots2.png)
-
-### Milestones Panel
-![Milestones Panel](screenshots/screenshots3.png)
-
-### Team Members Panel
-![Team Members Panel](screenshots/screenshots4.png)
-
----
-
 ## Features
 
 - **Kanban board** with drag-and-drop between columns
@@ -50,10 +34,7 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 
 ## Usage
 
-Open the board using any of these methods:
-- Press **Ctrl+M** (or **Cmd+M** on Mac)
-- Click the **dashboard icon** in the ribbon
-- Run **"Open Milestone Board"** from the command palette
+Click the **dashboard icon** in the ribbon, or run **"Open Milestone Board"** from the command palette.
 
 | Action             | How                                                       |
 | ------------------ | --------------------------------------------------------- |
@@ -65,7 +46,6 @@ Open the board using any of these methods:
 | Manage users       | Click **👥 Users** in the top bar                         |
 | Manage milestones  | Click **🏁 Milestones** in the top bar                    |
 | Reorder milestones | Drag rows in the Milestones panel                         |
-| Quick create       | Select **"➕ Create new..."** from assignee/milestone dropdowns in task modal |
 
 ---
 
