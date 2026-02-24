@@ -1,0 +1,10 @@
+{
+  "id": "milestone-board",
+  "name": "Milestone",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "A full-featured Kanban board with team members, milestones with ordering, and filtering by assignee, milestone, priority and tags.",
+  "author": "Achraf Ayar",
+  "authorUrl": "https://github.com/achraf-ayar",
+  "isDesktopOnly": false
+}
