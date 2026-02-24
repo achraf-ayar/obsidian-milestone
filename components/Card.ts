@@ -2,7 +2,7 @@
 import { BoardTask, BoardData, BoardFilters } from "../src/types";
 import { matchesFilter } from "../utils/filters";
 
-// ─── Card Component ───────────────────────────────────────────────────────────
+// Card Component
 
 const PRIORITY_COLOR: Record<string, string> = {
   high: "#ef4444",

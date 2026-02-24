@@ -1,4 +1,4 @@
-// ─── Tag Input Component ──────────────────────────────────────────────────────
+// Tag Input Component
 
 export class TagInput {
   private tags: string[];

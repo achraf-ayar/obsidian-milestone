@@ -3,7 +3,7 @@ import { BoardColumn, BoardData, BoardFilters } from "../src/types";
 import { matchesFilter } from "../utils/filters";
 import { buildCard, CardCallbacks } from "./Card";
 
-// ─── Column Component ─────────────────────────────────────────────────────────
+// Column Component
 
 export interface ColumnCallbacks extends CardCallbacks {
   onDrop: (colId: string) => void;

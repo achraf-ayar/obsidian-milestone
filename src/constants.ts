@@ -7,11 +7,11 @@ import type {
   BoardTask,
 } from "./types";
 
-// ─── View ─────────────────────────────────────────────────────────────────────
+// View
 
 export const VIEW_TYPE = "milestone-board";
 
-// ─── Default Structure ────────────────────────────────────────────────────────
+// Default Structure
 
 export const DEFAULT_COLUMNS: BoardColumn[] = [
   { id: "todo", label: "📋 To Do", color: "#4f6ef7" },
@@ -200,7 +200,7 @@ export const SEED_TASKS: BoardTask[] = [
   },
 ];
 
-// ─── Plugin Settings ──────────────────────────────────────────────────────────
+// Plugin Settings
 
 export interface MilestoneSettings {
   dataFile: string;

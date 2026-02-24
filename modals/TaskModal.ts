@@ -4,7 +4,7 @@ import { formGroup, trapEscape } from "../utils/dom";
 import { TagInput } from "../components/TagInput";
 import { BoardData, BoardTask } from "../src/types";
 
-// ─── Task Modal ───────────────────────────────────────────────────────────────
+// Task Modal
 
 export function openTaskModal(
   data: BoardData,
@@ -21,7 +21,7 @@ export function openTaskModal(
   const modal = document.createElement("div");
   modal.className = "ms-modal";
 
-  // ── Header ──
+  // Header
   const hd = document.createElement("div");
   hd.className = "ms-modal-hd";
 
@@ -39,7 +39,7 @@ export function openTaskModal(
   hd.appendChild(closeBtn);
   modal.appendChild(hd);
 
-  // ── Body ──
+  // Body
   const body = document.createElement("div");
   body.className = "ms-modal-body";
 
@@ -131,7 +131,7 @@ export function openTaskModal(
   body.appendChild(formGroup("Tags  (press Enter to add)", tagInput.el));
   modal.appendChild(body);
 
-  // ── Footer ──
+  // Footer
   const ft = document.createElement("div");
   ft.className = "ms-modal-ft";
 

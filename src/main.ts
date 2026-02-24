@@ -1,6 +1,6 @@
 
 
-// ─── Plugin Entry Point ───────────────────────────────────────────────────────
+// Plugin Entry Point
 
 import { BoardView } from "./boardView";
 import { MilestoneSettings, VIEW_TYPE, DEFAULT_SETTINGS } from "./constants";

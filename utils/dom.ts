@@ -1,4 +1,4 @@
-// ─── DOM Helpers ──────────────────────────────────────────────────────────────
+// DOM Helpers
 
 /** Create an element with optional class and text content. */
 export function el<K extends keyof HTMLElementTagNameMap>(

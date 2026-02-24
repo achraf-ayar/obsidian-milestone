@@ -3,7 +3,7 @@ import { Notice } from "obsidian";
 import { uid } from "../utils/uid";
 import { BoardData, BoardUser } from "../src/types";
 
-// ─── Users Panel ──────────────────────────────────────────────────────────────
+// Users Panel
 
 export function buildUsersPanel(
   data: BoardData,
@@ -33,7 +33,7 @@ export function buildUsersPanel(
   return panel;
 }
 
-// ── User Row ──────────────────────────────────────────────────────────────────
+// User Row
 
 function buildUserRow(
   user: BoardUser,
@@ -92,7 +92,7 @@ function buildUserRow(
   return row;
 }
 
-// ── Add User Form ─────────────────────────────────────────────────────────────
+// Add User Form
 
 function buildAddUserForm(
   data: BoardData,
@@ -145,7 +145,7 @@ function buildAddUserForm(
   return form;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 
 function buildPanelHeader(title: string, onClose: () => void): HTMLElement {
   const header = document.createElement("div");

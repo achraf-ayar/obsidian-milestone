@@ -1,4 +1,4 @@
-// ─── Domain Types ────────────────────────────────────────────────────────────
+// Domain Types
 
 export interface BoardTask {
   id: string;

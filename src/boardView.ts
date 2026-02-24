@@ -10,8 +10,7 @@ import { buildUsersPanel } from "../panels/UsersPanel";
 import { DataStore } from "../utils/dataStore";
 import { uniqueTagsFromTasks, matchesFilter } from "../utils/filters";
 
-// ─── Board View ───────────────────────────────────────────────────────────────
-// The root ItemView — renders the topbar, stats bar, board columns, and panels.
+// Board View: renders the topbar, stats bar, board columns, and panels
 
 export class BoardView extends ItemView {
   private plugin: MilestoneBoardPlugin;
@@ -54,7 +53,7 @@ export class BoardView extends ItemView {
     /* nothing to clean up */
   }
 
-  // ── Data ──────────────────────────────────────────────────────────────────
+  // Data
 
   private async reload(): Promise<void> {
     this.data = await this.store.load();
@@ -67,7 +66,7 @@ export class BoardView extends ItemView {
     this.render();
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // Render
 
   private render(): void {
     const root = this.containerEl.children[1] as HTMLElement;
@@ -115,7 +114,7 @@ export class BoardView extends ItemView {
     root.appendChild(body);
   }
 
-  // ── Topbar ────────────────────────────────────────────────────────────────
+  // Topbar
 
   private buildTopbar(): HTMLElement {
     const bar = document.createElement("div");
@@ -260,7 +259,7 @@ export class BoardView extends ItemView {
     return sel;
   }
 
-  // ── Stats bar ─────────────────────────────────────────────────────────────
+  // Stats bar
 
   private buildStatsbar(): HTMLElement {
     const bar = document.createElement("div");
@@ -291,7 +290,7 @@ export class BoardView extends ItemView {
     return bar;
   }
 
-  // ── Board ─────────────────────────────────────────────────────────────────
+  // Board
 
   private buildBoard(): HTMLElement {
     const board = document.createElement("div");
@@ -324,7 +323,7 @@ export class BoardView extends ItemView {
     return board;
   }
 
-  // ── Drag & Drop ───────────────────────────────────────────────────────────
+  // Drag & Drop
 
   private handleDrop(colId: string): void {
     if (!this.dragId) return;
@@ -336,7 +335,7 @@ export class BoardView extends ItemView {
     this.dragId = null;
   }
 
-  // ── Filter Application ────────────────────────────────────────────────────
+  // Filter Application
 
   private applyFilters(): void {
     // Update card visibility without full re-render for performance

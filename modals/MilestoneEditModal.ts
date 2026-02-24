@@ -2,7 +2,7 @@
 import { BoardData, BoardMilestone } from "../src/types";
 import { formGroup, trapEscape } from "../utils/dom";
 
-// ─── Milestone Edit Modal ─────────────────────────────────────────────────────
+// Milestone Edit Modal
 
 export function openMilestoneEditModal(
   milestone: BoardMilestone,

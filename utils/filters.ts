@@ -1,5 +1,5 @@
 
-// ─── Filter Matching ──────────────────────────────────────────────────────────
+// Filter Matching
 
 import { BoardFilters, BoardTask } from "../src/types";
 
@@ -21,7 +21,7 @@ export function matchesFilter(task: BoardTask, filters: BoardFilters): boolean {
   return true;
 }
 
-// ─── Derive Unique Values ─────────────────────────────────────────────────────
+// Derive Unique Values
 
 export function uniqueTagsFromTasks(tasks: BoardTask[]): string[] {
   return [...new Set(tasks.flatMap((t) => t.tags ?? []))];

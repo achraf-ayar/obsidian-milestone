@@ -3,8 +3,7 @@ import { SEED_TASKS, DEFAULT_COLUMNS, DEFAULT_USERS, DEFAULT_MILESTONES } from "
 import { BoardData } from "../src/types";
 
 
-// ─── Data Store ───────────────────────────────────────────────────────────────
-// Responsible for reading and writing the board JSON file in the vault.
+// Data Store: reads and writes the board JSON file in the vault
 
 export class DataStore {
   private app: App;

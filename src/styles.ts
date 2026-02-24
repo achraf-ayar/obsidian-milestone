@@ -1,10 +1,9 @@
-// ─── Stylesheet ───────────────────────────────────────────────────────────────
-// All component styles live here so the view stays logic-only.
+// Stylesheet: all component styles
 
 export const STYLES = `
   .ms-root * { box-sizing: border-box; }
 
-  /* ── Topbar ── */
+  /* Topbar */
   .ms-topbar {
     display: flex; align-items: center; gap: 10px; padding: 10px 16px;
     border-bottom: 1px solid var(--background-modifier-border);
@@ -27,7 +26,7 @@ export const STYLES = `
   .ms-input { width: 150px; }
   .ms-input:focus, .ms-select:focus { border-color: var(--color-accent); }
 
-  /* ── Buttons ── */
+  /* Buttons */
   .ms-btn {
     border-radius: 7px; padding: 6px 13px; font-size: 12px; font-weight: 600;
     cursor: pointer; border: none; font-family: var(--font-interface);
@@ -52,7 +51,7 @@ export const STYLES = `
   }
   .ms-btn-panel:hover { border-color: var(--color-accent); color: var(--color-accent); }
 
-  /* ── Stats bar ── */
+  /* Stats bar */
   .ms-statsbar {
     display: flex; gap: 20px; padding: 6px 16px;
     background: var(--background-secondary); flex-shrink: 0;
@@ -62,7 +61,7 @@ export const STYLES = `
   .ms-stat { display: flex; align-items: center; gap: 5px; }
   .ms-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-  /* ── Board & Columns ── */
+  /* Board & Columns */
   .ms-board {
     display: flex; gap: 14px; padding: 16px;
     overflow-x: auto; overflow-y: hidden; flex: 1; align-items: flex-start;
@@ -98,7 +97,7 @@ export const STYLES = `
     border-radius: 0 0 10px 10px;
   }
 
-  /* ── Cards ── */
+  /* Cards */
   .ms-card {
     background: var(--background-primary);
     border: 1px solid var(--background-modifier-border);
@@ -133,7 +132,7 @@ export const STYLES = `
   .ms-card-btn:hover { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
   .ms-card-btn.del:hover { background: #ef4444; border-color: #ef4444; }
 
-  /* ── Badges ── */
+  /* Badges */
   .ms-badge {
     display: inline-flex; align-items: center; gap: 3px;
     border-radius: 4px; padding: 2px 7px; font-size: 10px; font-weight: 500;
@@ -143,7 +142,7 @@ export const STYLES = `
   .ms-badge-low    { background: color-mix(in srgb, #10b981 15%, transparent); color: #34d399; border: 1px solid color-mix(in srgb, #10b981 30%, transparent); }
   .ms-badge-tag    { background: color-mix(in srgb, #a855f7 15%, transparent); color: #c084fc; border: 1px solid color-mix(in srgb, #a855f7 30%, transparent); }
 
-  /* ── Add card button ── */
+  /* Add card button */
   .ms-add-card-btn {
     margin: 6px 8px 8px; background: transparent;
     border: 1px dashed var(--background-modifier-border);
@@ -155,7 +154,7 @@ export const STYLES = `
   .ms-add-card-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
   .ms-empty { text-align: center; padding: 20px 12px; color: var(--text-faint); font-size: 11px; line-height: 1.8; }
 
-  /* ── Side Panel ── */
+  /* Side Panel */
   .ms-panel {
     width: 340px; min-width: 340px;
     border-left: 1px solid var(--background-modifier-border);
@@ -183,7 +182,7 @@ export const STYLES = `
     padding-bottom: 4px; border-bottom: 1px solid var(--background-modifier-border);
   }
 
-  /* ── Panel Items ── */
+  /* Panel Items */
   .ms-item {
     display: flex; align-items: center; gap: 10px;
     background: var(--background-primary);
@@ -219,11 +218,11 @@ export const STYLES = `
   .ms-drag-handle { cursor: grab; color: var(--text-faint); font-size: 14px; padding: 0 2px; user-select: none; flex-shrink: 0; }
   .ms-drag-handle:active { cursor: grabbing; }
 
-  /* ── Progress ── */
+  /* Progress */
   .ms-progress { height: 3px; background: var(--background-modifier-border); border-radius: 2px; overflow: hidden; margin-top: 5px; }
   .ms-progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
 
-  /* ── Add Form ── */
+  /* Add Form */
   .ms-add-form {
     background: var(--background-primary);
     border: 1px solid var(--background-modifier-border);
@@ -247,7 +246,7 @@ export const STYLES = `
   }
   .ms-color-swatch:hover { border-color: var(--color-accent); }
 
-  /* ── Modal ── */
+  /* Modal */
   .ms-overlay {
     position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px); z-index: 9999;
@@ -278,7 +277,7 @@ export const STYLES = `
     border-top: 1px solid var(--background-modifier-border);
   }
 
-  /* ── Form Elements ── */
+  /* Form Elements */
   .ms-fg { display: flex; flex-direction: column; gap: 5px; }
   .ms-fl { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .ms-fi, .ms-fs, .ms-ft {
@@ -292,7 +291,7 @@ export const STYLES = `
   .ms-ft { resize: vertical; min-height: 72px; }
   .ms-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-  /* ── Tag Input ── */
+  /* Tag Input */
   .ms-tag-wrap {
     display: flex; flex-wrap: wrap; gap: 5px; min-height: 38px;
     background: var(--background-secondary);
