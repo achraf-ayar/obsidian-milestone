@@ -293,6 +293,53 @@ export const STYLES = `
   .ms-ft { resize: vertical; min-height: 72px; }
   .ms-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+  /* Stats Dashboard */
+  .ms-stats-dash {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 20px; scrollbar-width: thin;
+  }
+  .ms-stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px;
+  }
+  .ms-stats-card {
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 10px; padding: 16px; text-align: center;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .ms-stats-card:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+  .ms-stats-card-icon {
+    width: 40px; height: 40px; border-radius: 10px; margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .ms-stats-card-value { font-size: 22px; font-weight: 700; color: var(--text-normal); line-height: 1.2; }
+  .ms-stats-card-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+  .ms-stats-charts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;
+  }
+  .ms-chart-card {
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 10px; padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .ms-chart-title {
+    font-size: 12px; font-weight: 700; color: var(--text-normal);
+    padding-bottom: 8px; border-bottom: 1px solid var(--background-modifier-border);
+  }
+  .ms-chart-row { display: flex; align-items: center; gap: 10px; }
+  .ms-chart-label {
+    font-size: 11px; color: var(--text-muted); width: 90px; flex-shrink: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ms-chart-bar-wrap {
+    flex: 1; height: 10px; background: var(--background-modifier-border);
+    border-radius: 5px; overflow: hidden;
+  }
+  .ms-chart-bar { height: 100%; border-radius: 5px; transition: width 0.5s ease; min-width: 2px; }
+  .ms-chart-val { font-size: 11px; font-weight: 600; color: var(--text-normal); width: 32px; text-align: right; flex-shrink: 0; }
+
   /* Tag Input */
   .ms-tag-wrap {
     display: flex; flex-wrap: wrap; gap: 5px; min-height: 38px;

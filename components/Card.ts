@@ -124,10 +124,17 @@ export function buildCard(
     meta.appendChild(assignBadge);
   }
 
-  // Tag badges
+  // Tag badges — use each tag's saved colour
   (task.tags ?? []).forEach((tag) => {
+    const tagData = data.tags?.find((t) => t.name === tag);
+    const tColor = tagData?.color ?? "#a78bfa";
     const tagBadge = document.createElement("span");
-    tagBadge.className = "ms-badge ms-badge-tag";
+    tagBadge.className = "ms-badge";
+    tagBadge.style.cssText = `
+      background: color-mix(in srgb, ${tColor} 15%, transparent);
+      color: ${tColor};
+      border: 1px solid color-mix(in srgb, ${tColor} 35%, transparent);
+    `;
     tagBadge.textContent = `#${tag}`;
     meta.appendChild(tagBadge);
   });

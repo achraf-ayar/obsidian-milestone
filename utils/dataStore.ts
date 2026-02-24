@@ -1,5 +1,5 @@
 import { App, Notice, TFile } from "obsidian";
-import { SEED_TASKS, DEFAULT_COLUMNS, DEFAULT_USERS, DEFAULT_MILESTONES } from "../src/constants";
+import { SEED_TASKS, DEFAULT_COLUMNS, DEFAULT_USERS, DEFAULT_MILESTONES, DEFAULT_TAGS } from "../src/constants";
 import { BoardData } from "../src/types";
 
 
@@ -30,6 +30,7 @@ export class DataStore {
           columns: parsed.columns ?? DEFAULT_COLUMNS,
           users: parsed.users ?? DEFAULT_USERS,
           milestones: parsed.milestones ?? DEFAULT_MILESTONES,
+          tags: parsed.tags ?? DEFAULT_TAGS,
         };
       } catch {
         new Notice(
@@ -61,6 +62,7 @@ export class DataStore {
       columns: DEFAULT_COLUMNS,
       users: DEFAULT_USERS,
       milestones: DEFAULT_MILESTONES,
+      tags: DEFAULT_TAGS,
     };
   }
 }

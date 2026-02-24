@@ -4,6 +4,7 @@ import type {
   BoardUser,
   BoardMilestone,
   BoardTask,
+  BoardTag,
 } from "./types";
 
 // View
@@ -23,6 +24,8 @@ export const DEFAULT_COLUMNS: BoardColumn[] = [
 export const DEFAULT_USERS: BoardUser[] = [];
 
 export const DEFAULT_MILESTONES: BoardMilestone[] = [];
+
+export const DEFAULT_TAGS: BoardTag[] = [];
 
 export const SEED_TASKS: BoardTask[] = [];
 

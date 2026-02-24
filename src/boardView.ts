@@ -7,6 +7,7 @@ import { buildColumn } from "../components/Column";
 import { openTaskModal } from "../modals/TaskModal";
 import { buildMilestonesPanel } from "../panels/MilestonePanel";
 import { buildUsersPanel } from "../panels/UsersPanel";
+import { buildTagsPanel } from "../panels/TagsPanel";
 import { DataStore } from "../utils/dataStore";
 import { uniqueTagsFromTasks, matchesFilter } from "../utils/filters";
 
@@ -19,12 +20,13 @@ export class BoardView extends ItemView {
   private filters: BoardFilters;
   private activePanel: ActivePanel;
   private dragId: string | null;
+  private showStats: boolean;
 
   constructor(leaf: WorkspaceLeaf, plugin: MilestoneBoardPlugin) {
     super(leaf);
     this.plugin = plugin;
     this.store = new DataStore(this.app, plugin.settings.dataFile);
-    this.data = { tasks: [], columns: [], users: [], milestones: [] };
+    this.data = { tasks: [], columns: [], users: [], milestones: [], tags: [] };
     this.filters = {
       search: "",
       assignee: "",
@@ -34,6 +36,7 @@ export class BoardView extends ItemView {
     };
     this.activePanel = null;
     this.dragId = null;
+    this.showStats = false;
   }
 
   getViewType() {
@@ -83,6 +86,11 @@ export class BoardView extends ItemView {
     root.appendChild(this.buildTopbar());
     root.appendChild(this.buildStatsbar());
 
+    if (this.showStats) {
+      root.appendChild(this.buildStatsDashboard());
+      return;
+    }
+
     const body = document.createElement("div");
     body.style.cssText = "display:flex;flex:1;overflow:hidden;";
     body.appendChild(this.buildBoard());
@@ -101,6 +109,17 @@ export class BoardView extends ItemView {
     } else if (this.activePanel === "milestones") {
       body.appendChild(
         buildMilestonesPanel(
+          this.data,
+          (d) => this.save(d),
+          () => {
+            this.activePanel = null;
+            this.render();
+          },
+        ),
+      );
+    } else if (this.activePanel === "tags") {
+      body.appendChild(
+        buildTagsPanel(
           this.data,
           (d) => this.save(d),
           () => {
@@ -204,6 +223,7 @@ export class BoardView extends ItemView {
       "ms-btn ms-btn-panel" + (this.activePanel === "users" ? " active" : "");
     usersBtn.textContent = "👥 Users";
     usersBtn.addEventListener("click", () => {
+      this.showStats = false;
       this.activePanel = this.activePanel === "users" ? null : "users";
       this.render();
     });
@@ -215,11 +235,33 @@ export class BoardView extends ItemView {
       (this.activePanel === "milestones" ? " active" : "");
     milesBtn.textContent = "🏁 Milestones";
     milesBtn.addEventListener("click", () => {
-      this.activePanel =
-        this.activePanel === "milestones" ? null : "milestones";
+      this.showStats = false;
+      this.activePanel = this.activePanel === "milestones" ? null : "milestones";
       this.render();
     });
     bar.appendChild(milesBtn);
+
+    const tagsBtn = document.createElement("button");
+    tagsBtn.className =
+      "ms-btn ms-btn-panel" + (this.activePanel === "tags" ? " active" : "");
+    tagsBtn.textContent = "🏷 Tags";
+    tagsBtn.addEventListener("click", () => {
+      this.showStats = false;
+      this.activePanel = this.activePanel === "tags" ? null : "tags";
+      this.render();
+    });
+    bar.appendChild(tagsBtn);
+
+    const statsBtn = document.createElement("button");
+    statsBtn.className =
+      "ms-btn ms-btn-panel" + (this.showStats ? " active" : "");
+    statsBtn.textContent = "📊 Stats";
+    statsBtn.addEventListener("click", () => {
+      this.showStats = !this.showStats;
+      if (this.showStats) this.activePanel = null;
+      this.render();
+    });
+    bar.appendChild(statsBtn);
 
     // New task button
     const newTaskBtn = document.createElement("button");
@@ -321,6 +363,159 @@ export class BoardView extends ItemView {
     });
 
     return board;
+  }
+
+  // Stats Dashboard
+
+  private buildStatsDashboard(): HTMLElement {
+    const wrap = document.createElement("div");
+    wrap.className = "ms-stats-dash";
+
+    const tasks = this.data.tasks;
+    const total = tasks.length;
+    const done = tasks.filter((t) => t.col === "done").length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+
+    // --- Overview cards row ---
+    const overview = document.createElement("div");
+    overview.className = "ms-stats-row";
+
+    const overviewCards = [
+      { label: "Total Tasks", value: String(total), color: "#4f6ef7", icon: "📋" },
+      { label: "Completed", value: `${done} (${pct}%)`, color: "#10b981", icon: "✅" },
+      { label: "High Priority", value: String(tasks.filter((t) => t.priority === "high").length), color: "#ef4444", icon: "🔴" },
+      { label: "Team Members", value: String(this.data.users.length), color: "#5eead4", icon: "👥" },
+      { label: "Milestones", value: String(this.data.milestones.length), color: "#f59e0b", icon: "🏁" },
+      { label: "Tags", value: String(this.data.tags.length), color: "#a855f7", icon: "🏷" },
+    ];
+
+    overviewCards.forEach(({ label, value, color, icon }) => {
+      const card = document.createElement("div");
+      card.className = "ms-stats-card";
+      card.innerHTML = `
+        <div class="ms-stats-card-icon" style="background:color-mix(in srgb, ${color} 15%, transparent);color:${color}">${icon}</div>
+        <div class="ms-stats-card-value">${value}</div>
+        <div class="ms-stats-card-label">${label}</div>
+      `;
+      overview.appendChild(card);
+    });
+    wrap.appendChild(overview);
+
+    // --- Charts row ---
+    const chartsRow = document.createElement("div");
+    chartsRow.className = "ms-stats-charts";
+
+    // Tasks by Column
+    chartsRow.appendChild(this.buildBarChart(
+      "Tasks by Column",
+      this.data.columns.map((c) => ({
+        label: c.label.replace(/^.+\s/, ""),
+        value: tasks.filter((t) => t.col === c.id).length,
+        color: c.color,
+      })),
+    ));
+
+    // Tasks by Priority
+    const priData = [
+      { label: "High", value: tasks.filter((t) => t.priority === "high").length, color: "#ef4444" },
+      { label: "Medium", value: tasks.filter((t) => t.priority === "medium").length, color: "#f59e0b" },
+      { label: "Low", value: tasks.filter((t) => t.priority === "low").length, color: "#10b981" },
+    ];
+    chartsRow.appendChild(this.buildBarChart("Tasks by Priority", priData));
+
+    // Tasks by Assignee
+    const userCounts = this.data.users.map((u) => ({
+      label: u.name,
+      value: tasks.filter((t) => t.assignee === u.name).length,
+      color: u.color,
+    })).sort((a, b) => b.value - a.value);
+    const unassigned = tasks.filter((t) => !t.assignee).length;
+    if (unassigned > 0) userCounts.push({ label: "Unassigned", value: unassigned, color: "#6b7280" });
+    chartsRow.appendChild(this.buildBarChart("Tasks by Assignee", userCounts));
+
+    wrap.appendChild(chartsRow);
+
+    // --- Second charts row ---
+    const chartsRow2 = document.createElement("div");
+    chartsRow2.className = "ms-stats-charts";
+
+    // Tasks by Milestone
+    const mileCounts = [...this.data.milestones]
+      .sort((a, b) => a.order - b.order)
+      .map((m) => {
+        const mTasks = tasks.filter((t) => t.milestone === m.name);
+        const mDone = mTasks.filter((t) => t.col === "done").length;
+        return { label: `${m.name}`, value: mTasks.length, color: m.color, done: mDone };
+      });
+    const noMile = tasks.filter((t) => !t.milestone).length;
+    if (noMile > 0) mileCounts.push({ label: "No milestone", value: noMile, color: "#6b7280", done: 0 });
+    chartsRow2.appendChild(this.buildBarChart("Tasks by Milestone", mileCounts));
+
+    // Tasks by Tag
+    const tagCounts = this.data.tags.map((tag) => ({
+      label: `#${tag.name}`,
+      value: tasks.filter((t) => t.tags?.includes(tag.name)).length,
+      color: tag.color,
+    })).sort((a, b) => b.value - a.value);
+    chartsRow2.appendChild(this.buildBarChart("Tasks by Tag", tagCounts.length > 0 ? tagCounts : [{ label: "No tags", value: 0, color: "#6b7280" }]));
+
+    // Milestone progress
+    const mileProgress = [...this.data.milestones]
+      .sort((a, b) => a.order - b.order)
+      .map((m) => {
+        const mTasks = tasks.filter((t) => t.milestone === m.name);
+        const mDone = mTasks.filter((t) => t.col === "done").length;
+        const mPct = mTasks.length ? Math.round((mDone / mTasks.length) * 100) : 0;
+        return { label: m.label || m.name, value: mPct, color: m.color, suffix: "%" };
+      });
+    chartsRow2.appendChild(this.buildBarChart("Milestone Progress", mileProgress.length > 0 ? mileProgress : [{ label: "No milestones", value: 0, color: "#6b7280" }]));
+
+    wrap.appendChild(chartsRow2);
+
+    return wrap;
+  }
+
+  private buildBarChart(
+    title: string,
+    items: { label: string; value: number; color: string; suffix?: string }[],
+  ): HTMLElement {
+    const card = document.createElement("div");
+    card.className = "ms-chart-card";
+
+    const heading = document.createElement("div");
+    heading.className = "ms-chart-title";
+    heading.textContent = title;
+    card.appendChild(heading);
+
+    const maxVal = Math.max(...items.map((i) => i.value), 1);
+
+    items.forEach(({ label, value, color, suffix }) => {
+      const row = document.createElement("div");
+      row.className = "ms-chart-row";
+
+      const lbl = document.createElement("div");
+      lbl.className = "ms-chart-label";
+      lbl.textContent = label;
+
+      const barWrap = document.createElement("div");
+      barWrap.className = "ms-chart-bar-wrap";
+      const bar = document.createElement("div");
+      bar.className = "ms-chart-bar";
+      bar.style.width = `${Math.max((value / maxVal) * 100, 2)}%`;
+      bar.style.background = color;
+      barWrap.appendChild(bar);
+
+      const val = document.createElement("div");
+      val.className = "ms-chart-val";
+      val.textContent = `${value}${suffix ?? ""}`;
+
+      row.appendChild(lbl);
+      row.appendChild(barWrap);
+      row.appendChild(val);
+      card.appendChild(row);
+    });
+
+    return card;
   }
 
   // Drag & Drop

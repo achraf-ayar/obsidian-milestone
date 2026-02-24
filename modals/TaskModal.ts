@@ -3,8 +3,7 @@ import { Notice } from "obsidian";
 
 import { uid } from "../utils/uid";
 import { formGroup, trapEscape, randomColor } from "../utils/dom";
-import { TagInput } from "../components/TagInput";
-import { BoardData, BoardTask, BoardUser, BoardMilestone } from "../src/types";
+import { BoardData, BoardTask, BoardUser, BoardMilestone, BoardTag } from "../src/types";
 
 // Task Modal
 
@@ -15,7 +14,6 @@ export function openTaskModal(
   editId?: string,
 ): void {
   const task = editId ? data.tasks.find((t) => t.id === editId) : null;
-  const tagInput = new TagInput(task?.tags ?? []);
 
   const overlay = document.createElement("div");
   overlay.className = "ms-overlay";
@@ -145,7 +143,33 @@ export function openTaskModal(
   body.appendChild(row2);
 
   // Tags
-  body.appendChild(formGroup("Tags  (press Enter to add)", tagInput.el));
+  const tagsInput = document.createElement("input");
+  tagsInput.className = "ms-fi";
+  tagsInput.placeholder = "e.g. frontend, bug, urgent";
+  tagsInput.value = (task?.tags ?? []).join(", ");
+
+  const tagsInputWrapper = document.createElement("div");
+  tagsInputWrapper.appendChild(tagsInput);
+
+  // Autocomplete from saved tags + tags already used in tasks
+  const allTags = new Set<string>([
+    ...data.tags.map((t) => t.name),
+    ...data.tasks.flatMap((t) => t.tags ?? []),
+  ]);
+  if (allTags.size > 0) {
+    const datalistId = "tags-datalist-" + uid();
+    const datalist = document.createElement("datalist");
+    datalist.id = datalistId;
+    allTags.forEach((tag) => {
+      const opt = document.createElement("option");
+      opt.value = tag;
+      datalist.appendChild(opt);
+    });
+    tagsInput.setAttribute("list", datalistId);
+    tagsInputWrapper.appendChild(datalist);
+  }
+
+  body.appendChild(formGroup("Tags (comma separated)", tagsInputWrapper));
   modal.appendChild(body);
 
   // Footer
@@ -202,6 +226,20 @@ export function openTaskModal(
       }
     }
 
+    const parsedTags = tagsInput.value
+      .split(",")
+      .map((t) => t.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase())
+      .filter(Boolean);
+
+    // Auto-create any new tags not yet in data.tags
+    const existingTagNames = new Set((updated.tags ?? []).map((t: BoardTag) => t.name));
+    const newTags: BoardTag[] = parsedTags
+      .filter((name) => !existingTagNames.has(name))
+      .map((name) => ({ id: uid(), name, color: randomColor() }));
+    if (newTags.length > 0) {
+      updated.tags = [...(updated.tags ?? []), ...newTags];
+    }
+
     const payload = {
       title,
       desc: descInput.value.trim(),
@@ -209,7 +247,7 @@ export function openTaskModal(
       priority: priSel.value as BoardTask["priority"],
       assignee: assigneeValue,
       milestone: milestoneValue,
-      tags: tagInput.getValue(),
+      tags: parsedTags,
     };
 
     if (task) {

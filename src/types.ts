@@ -34,11 +34,18 @@ export interface BoardMilestone {
   dueDate: string;
 }
 
+export interface BoardTag {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface BoardData {
   tasks: BoardTask[];
   columns: BoardColumn[];
   users: BoardUser[];
   milestones: BoardMilestone[];
+  tags: BoardTag[];
 }
 
 export interface BoardFilters {
@@ -49,4 +56,4 @@ export interface BoardFilters {
   tag: string;
 }
 
-export type ActivePanel = "users" | "milestones" | null;
+export type ActivePanel = "users" | "milestones" | "tags" | null;
