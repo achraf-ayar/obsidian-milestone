@@ -69,9 +69,9 @@ export const STYLES = `
   .ms-col {
     background: var(--background-secondary);
     border: 1px solid var(--background-modifier-border);
-    border-radius: 10px; width: 272px; min-width: 272px;
+    border-radius: 10px; min-width: 272px; flex: 1;
     display: flex; flex-direction: column;
-    max-height: 100%; flex-shrink: 0; overflow: hidden;
+    max-height: 100%; overflow: hidden;
   }
   .ms-col-header {
     display: flex; align-items: center; justify-content: space-between;
