@@ -13,6 +13,24 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 - **Milestones panel** — create milestones with labels, due dates, progress bars, and drag-to-reorder
 - **Task modal** — create and edit tasks with title, description, status, priority, assignee, milestone, and tags
 - **Vault-native storage** — all data lives in a single `.json` file, perfect for Git/Sync sharing
+- **Quick create** — add users and milestones on-the-fly from task modal dropdowns
+- **Keyboard shortcut** — press Ctrl+M (Cmd+M on Mac) to open the board instantly
+
+---
+
+## Screenshots
+
+### Kanban Board View
+![Kanban Board](screenshots/screenshots1.png)
+
+### Task Creation Modal
+![Task Modal](screenshots/screenshots2.png)
+
+### Milestones Panel
+![Milestones Panel](screenshots/screenshots3.png)
+
+### Team Members Panel
+![Team Members Panel](screenshots/screenshots4.png)
 
 ---
 
@@ -34,7 +52,10 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 
 ## Usage
 
-Click the **dashboard icon** in the ribbon, or run **"Open Milestone Board"** from the command palette.
+Open the board using any of these methods:
+- Press **Ctrl+M** (or **Cmd+M** on Mac)
+- Click the **dashboard icon** in the ribbon
+- Run **"Open Milestone Board"** from the command palette
 
 | Action             | How                                                       |
 | ------------------ | --------------------------------------------------------- |
@@ -46,6 +67,7 @@ Click the **dashboard icon** in the ribbon, or run **"Open Milestone Board"** fr
 | Manage users       | Click **👥 Users** in the top bar                         |
 | Manage milestones  | Click **🏁 Milestones** in the top bar                    |
 | Reorder milestones | Drag rows in the Milestones panel                         |
+| Quick create       | Select **"➕ Create new..."** from assignee/milestone dropdowns in task modal |
 
 ---
 
