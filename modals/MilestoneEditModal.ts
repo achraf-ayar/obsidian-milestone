@@ -16,7 +16,7 @@ export function openMilestoneEditModal(
   modal.className = "ms-modal";
   modal.style.width = "360px";
 
-  // ── Header ──
+  // Header
   const hd = document.createElement("div");
   hd.className = "ms-modal-hd";
 
@@ -34,7 +34,7 @@ export function openMilestoneEditModal(
   hd.appendChild(closeBtn);
   modal.appendChild(hd);
 
-  // ── Body ──
+  // Body
   const body = document.createElement("div");
   body.className = "ms-modal-body";
 
@@ -63,7 +63,7 @@ export function openMilestoneEditModal(
   body.appendChild(formGroup("Color", colorIn));
   modal.appendChild(body);
 
-  // ── Footer ──
+  // Footer
   const ft = document.createElement("div");
   ft.className = "ms-modal-ft";
 

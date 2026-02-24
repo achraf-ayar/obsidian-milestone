@@ -1,6 +1,7 @@
 import { Notice } from "obsidian";
 
 import { uid } from "../utils/uid";
+import { buildPanelHeader, sectionLabel, randomColor } from "../utils/dom";
 import { openMilestoneEditModal } from "../modals/MilestoneEditModal";
 import { BoardData, BoardMilestone } from "../src/types";
 
@@ -266,36 +267,3 @@ function buildAddMilestoneForm(
   return form;
 }
 
-// --- Helpers ---
-
-function buildPanelHeader(title: string, onClose: () => void): HTMLElement {
-  const header = document.createElement("div");
-  header.className = "ms-panel-header";
-  const titleEl = document.createElement("div");
-  titleEl.className = "ms-panel-title";
-  titleEl.textContent = title;
-  const closeBtn = document.createElement("button");
-  closeBtn.className = "ms-btn ms-btn-ghost";
-  closeBtn.style.padding = "4px 10px";
-  closeBtn.textContent = "\u2715";
-  closeBtn.addEventListener("click", onClose);
-  header.appendChild(titleEl);
-  header.appendChild(closeBtn);
-  return header;
-}
-
-function sectionLabel(text: string): HTMLElement {
-  const el = document.createElement("div");
-  el.className = "ms-section-label";
-  el.textContent = text;
-  return el;
-}
-
-function randomColor(): string {
-  return (
-    "#" +
-    Math.floor(Math.random() * 0xffffff)
-      .toString(16)
-      .padStart(6, "0")
-  );
-}
