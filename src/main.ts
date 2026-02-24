@@ -23,11 +23,17 @@ export default class MilestoneBoardPlugin extends Plugin {
       this.activateView();
     });
 
-    // Command palette entry
+    // Command palette entry with keyboard shortcut
     this.addCommand({
       id: "open-milestone-board",
       name: "Open Milestone Board",
       callback: () => this.activateView(),
+      hotkeys: [
+        {
+          modifiers: ["Mod"],
+          key: "m",
+        },
+      ],
     });
 
     // Settings tab
