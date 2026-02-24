@@ -96,108 +96,52 @@ export function openTaskModal(
   const row2 = document.createElement("div");
   row2.className = "ms-2col";
 
-  const assignSel = document.createElement("select");
-  assignSel.className = "ms-fs";
-  const noAssign = document.createElement("option");
-  noAssign.value = "";
-  noAssign.textContent = "— None —";
-  assignSel.appendChild(noAssign);
-  data.users.forEach((u) => {
-    const opt = document.createElement("option");
-    opt.value = u.name;
-    opt.textContent = u.name;
-    if (u.name === task?.assignee) opt.selected = true;
-    assignSel.appendChild(opt);
-  });
-  const createUserOpt = document.createElement("option");
-  createUserOpt.value = "__create_new__";
-  createUserOpt.textContent = "➕ Create new user...";
-  assignSel.appendChild(createUserOpt);
+  const assignInput = document.createElement("input");
+  assignInput.className = "ms-fi";
+  assignInput.placeholder = "Enter username (e.g., @john)";
+  assignInput.value = task?.assignee ?? "";
   
-  assignSel.addEventListener("change", () => {
-    if (assignSel.value === "__create_new__") {
-      const username = prompt("Enter username (e.g., @john):");
-      if (username) {
-        let name = username.trim();
-        if (!name.startsWith("@")) name = "@" + name;
-        if (data.users.find((u) => u.name === name)) {
-          new Notice("User already exists.");
-          assignSel.value = task?.assignee ?? "";
-          return;
-        }
-        const newUser: BoardUser = {
-          id: uid(),
-          name,
-          color: randomColor(),
-          initials: name.slice(1, 3).toUpperCase(),
-        };
-        data.users.push(newUser);
-        const opt = document.createElement("option");
-        opt.value = newUser.name;
-        opt.textContent = newUser.name;
-        opt.selected = true;
-        assignSel.insertBefore(opt, createUserOpt);
-        assignSel.value = newUser.name;
-      } else {
-        assignSel.value = task?.assignee ?? "";
-      }
-    }
-  });
-  row2.appendChild(formGroup("Assignee", assignSel));
+  const assignInputWrapper = document.createElement("div");
+  assignInputWrapper.appendChild(assignInput);
+  
+  if (data.users.length > 0) {
+    const datalistId = "user-datalist-" + uid();
+    const datalist = document.createElement("datalist");
+    datalist.id = datalistId;
+    data.users.forEach((u) => {
+      const opt = document.createElement("option");
+      opt.value = u.name;
+      datalist.appendChild(opt);
+    });
+    assignInput.setAttribute("list", datalistId);
+    assignInputWrapper.appendChild(datalist);
+  }
+  
+  row2.appendChild(formGroup("Assignee", assignInputWrapper));
 
-  const mileSel = document.createElement("select");
-  mileSel.className = "ms-fs";
-  const noMile = document.createElement("option");
-  noMile.value = "";
-  noMile.textContent = "— None —";
-  mileSel.appendChild(noMile);
-  [...data.milestones]
-    .sort((a, b) => a.order - b.order)
-    .forEach((m) => {
+  const mileInput = document.createElement("input");
+  mileInput.className = "ms-fi";
+  mileInput.placeholder = "Enter milestone (e.g., M4)";
+  mileInput.value = task?.milestone ?? "";
+  
+  const mileInputWrapper = document.createElement("div");
+  mileInputWrapper.appendChild(mileInput);
+  
+  if (data.milestones.length > 0) {
+    const datalistId = "milestone-datalist-" + uid();
+    const datalist = document.createElement("datalist");
+    datalist.id = datalistId;
+    data.milestones.forEach((m) => {
       const opt = document.createElement("option");
       opt.value = m.name;
-      opt.textContent = `${m.name} — ${m.label || m.name}`;
-      if (m.name === task?.milestone) opt.selected = true;
-      mileSel.appendChild(opt);
+      opt.label = m.label || m.name;
+      datalist.appendChild(opt);
     });
-  const createMileOpt = document.createElement("option");
-  createMileOpt.value = "__create_new__";
-  createMileOpt.textContent = "➕ Create new milestone...";
-  mileSel.appendChild(createMileOpt);
+    mileInput.setAttribute("list", datalistId);
+    mileInputWrapper.appendChild(datalist);
+  }
   
-  mileSel.addEventListener("change", () => {
-    if (mileSel.value === "__create_new__") {
-      const name = prompt("Enter milestone name (e.g., M4):");
-      if (name) {
-        const milestoneName = name.trim();
-        if (data.milestones.find((m) => m.name === milestoneName)) {
-          new Notice("Milestone already exists.");
-          mileSel.value = task?.milestone ?? "";
-          return;
-        }
-        const label = prompt("Enter milestone label (e.g., Launch):");
-        const maxOrder = data.milestones.reduce((max, m) => Math.max(max, m.order), 0);
-        const newMilestone: BoardMilestone = {
-          id: uid(),
-          name: milestoneName,
-          label: label?.trim() || milestoneName,
-          color: randomColor(),
-          order: maxOrder + 1,
-          dueDate: "",
-        };
-        data.milestones.push(newMilestone);
-        const opt = document.createElement("option");
-        opt.value = newMilestone.name;
-        opt.textContent = `${newMilestone.name} — ${newMilestone.label}`;
-        opt.selected = true;
-        mileSel.insertBefore(opt, createMileOpt);
-        mileSel.value = newMilestone.name;
-      } else {
-        mileSel.value = task?.milestone ?? "";
-      }
-    }
-  });
-  row2.appendChild(formGroup("Milestone", mileSel));
+  row2.appendChild(formGroup("Milestone", mileInputWrapper));
   body.appendChild(row2);
 
   // Tags
@@ -224,17 +168,49 @@ export function openTaskModal(
       return;
     }
 
+    const updated = { ...data };
+    
+    // Handle assignee - create user if new
+    let assigneeValue = assignInput.value.trim();
+    if (assigneeValue) {
+      if (!assigneeValue.startsWith("@")) assigneeValue = "@" + assigneeValue;
+      if (!data.users.find((u) => u.name === assigneeValue)) {
+        const newUser: BoardUser = {
+          id: uid(),
+          name: assigneeValue,
+          color: randomColor(),
+          initials: assigneeValue.slice(1, 3).toUpperCase(),
+        };
+        updated.users = [...data.users, newUser];
+      }
+    }
+    
+    // Handle milestone - create if new
+    let milestoneValue = mileInput.value.trim();
+    if (milestoneValue) {
+      if (!data.milestones.find((m) => m.name === milestoneValue)) {
+        const maxOrder = data.milestones.reduce((max, m) => Math.max(max, m.order), 0);
+        const newMilestone: BoardMilestone = {
+          id: uid(),
+          name: milestoneValue,
+          label: milestoneValue,
+          color: randomColor(),
+          order: maxOrder + 1,
+          dueDate: "",
+        };
+        updated.milestones = [...data.milestones, newMilestone];
+      }
+    }
+
     const payload = {
       title,
       desc: descInput.value.trim(),
       col: statusSel.value,
       priority: priSel.value as BoardTask["priority"],
-      assignee: assignSel.value,
-      milestone: mileSel.value,
+      assignee: assigneeValue,
+      milestone: milestoneValue,
       tags: tagInput.getValue(),
     };
-
-    const updated = { ...data };
 
     if (task) {
       updated.tasks = data.tasks.map((t) =>
