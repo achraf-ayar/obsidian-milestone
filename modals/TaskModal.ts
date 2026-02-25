@@ -142,34 +142,98 @@ export function openTaskModal(
   row2.appendChild(formGroup("Milestone", mileInputWrapper));
   body.appendChild(row2);
 
-  // Tags
-  const tagsInput = document.createElement("input");
-  tagsInput.className = "ms-fi";
-  tagsInput.placeholder = "e.g. frontend, bug, urgent";
-  tagsInput.value = (task?.tags ?? []).join(", ");
+  // Tags — pill input
+  const activeTags: string[] = [...(task?.tags ?? [])];
 
-  const tagsInputWrapper = document.createElement("div");
-  tagsInputWrapper.appendChild(tagsInput);
-
-  // Autocomplete from saved tags + tags already used in tasks
-  const allTags = new Set<string>([
+  const allTagNames = new Set<string>([
     ...data.tags.map((t) => t.name),
     ...data.tasks.flatMap((t) => t.tags ?? []),
   ]);
-  if (allTags.size > 0) {
-    const datalistId = "tags-datalist-" + uid();
-    const datalist = document.createElement("datalist");
-    datalist.id = datalistId;
-    allTags.forEach((tag) => {
-      const opt = document.createElement("option");
-      opt.value = tag;
-      datalist.appendChild(opt);
-    });
-    tagsInput.setAttribute("list", datalistId);
-    tagsInputWrapper.appendChild(datalist);
+
+  const tagWrap = document.createElement("div");
+  tagWrap.className = "ms-tag-wrap";
+
+  const bareInput = document.createElement("input");
+  bareInput.className = "ms-bare";
+  bareInput.placeholder = activeTags.length === 0 ? "Add tags…" : "";
+
+  // Datalist autocomplete
+  const datalistId = "tags-datalist-" + uid();
+  const datalist = document.createElement("datalist");
+  datalist.id = datalistId;
+  allTagNames.forEach((name) => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    datalist.appendChild(opt);
+  });
+  bareInput.setAttribute("list", datalistId);
+  tagWrap.appendChild(datalist);
+
+  function getTagColor(name: string): string {
+    const found = data.tags.find((t) => t.name === name);
+    return found?.color ?? "#a855f7";
   }
 
-  body.appendChild(formGroup("Tags (comma separated)", tagsInputWrapper));
+  function renderPills(): void {
+    // Remove all pill elements (keep input + datalist)
+    tagWrap.querySelectorAll(".ms-tag-pill").forEach((p) => p.remove());
+    activeTags.forEach((name) => {
+      const color = getTagColor(name);
+      const pill = document.createElement("span");
+      pill.className = "ms-tag-pill";
+      pill.style.cssText = `
+        background: color-mix(in srgb, ${color} 18%, transparent);
+        color: ${color};
+        border: 1px solid color-mix(in srgb, ${color} 35%, transparent);
+      `;
+      const label = document.createElement("span");
+      label.textContent = "#" + name;
+      const rm = document.createElement("span");
+      rm.className = "ms-tag-rm";
+      rm.textContent = "×";
+      rm.addEventListener("click", () => {
+        activeTags.splice(activeTags.indexOf(name), 1);
+        renderPills();
+      });
+      pill.appendChild(label);
+      pill.appendChild(rm);
+      tagWrap.insertBefore(pill, bareInput);
+    });
+    bareInput.placeholder = activeTags.length === 0 ? "Add tags…" : "";
+  }
+
+  function commitTag(raw: string): void {
+    const name = raw.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase();
+    if (name && !activeTags.includes(name)) {
+      activeTags.push(name);
+      renderPills();
+    }
+    bareInput.value = "";
+  }
+
+  bareInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === "," || e.key === "Tab") {
+      if (bareInput.value.trim()) {
+        e.preventDefault();
+        commitTag(bareInput.value);
+      }
+    } else if (e.key === "Backspace" && bareInput.value === "" && activeTags.length > 0) {
+      activeTags.pop();
+      renderPills();
+    }
+  });
+
+  bareInput.addEventListener("blur", () => {
+    if (bareInput.value.trim()) commitTag(bareInput.value);
+  });
+
+  // Clicking anywhere in the wrap focuses the input
+  tagWrap.addEventListener("click", () => bareInput.focus());
+  tagWrap.appendChild(bareInput);
+
+  renderPills();
+
+  body.appendChild(formGroup("Tags", tagWrap));
   modal.appendChild(body);
 
   // Footer
@@ -226,14 +290,12 @@ export function openTaskModal(
       }
     }
 
-    const parsedTags = tagsInput.value
-      .split(",")
-      .map((t) => t.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase())
-      .filter(Boolean);
+    // Commit any unconfirmed text still in the bare input
+    if (bareInput.value.trim()) commitTag(bareInput.value);
 
     // Auto-create any new tags not yet in data.tags
     const existingTagNames = new Set((updated.tags ?? []).map((t: BoardTag) => t.name));
-    const newTags: BoardTag[] = parsedTags
+    const newTags: BoardTag[] = activeTags
       .filter((name) => !existingTagNames.has(name))
       .map((name) => ({ id: uid(), name, color: randomColor() }));
     if (newTags.length > 0) {
@@ -247,7 +309,7 @@ export function openTaskModal(
       priority: priSel.value as BoardTask["priority"],
       assignee: assigneeValue,
       milestone: milestoneValue,
-      tags: parsedTags,
+      tags: [...activeTags],
     };
 
     if (task) {
