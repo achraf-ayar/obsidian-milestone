@@ -67,8 +67,12 @@ function buildUserRow(
   colorInput.className = "ms-color-swatch";
   colorInput.title = "Change colour";
   colorInput.addEventListener("input", () => {
+    // Live preview without saving
     user.color = colorInput.value;
     avatar.style.background = colorInput.value;
+  });
+  colorInput.addEventListener("change", () => {
+    // Save only when the picker is closed/committed
     onUpdate({ ...data });
   });
   row.appendChild(colorInput);

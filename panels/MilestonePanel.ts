@@ -152,9 +152,13 @@ function buildMilestoneRow(
   colorInput.className = "ms-color-swatch";
   colorInput.title = "Change colour";
   colorInput.addEventListener("input", () => {
+    // Live preview without saving
     mile.color = colorInput.value;
     badge.style.background = colorInput.value;
     progFill.style.background = colorInput.value;
+  });
+  colorInput.addEventListener("change", () => {
+    // Save only when the picker is closed/committed
     onUpdate({ ...data });
   });
   row.appendChild(colorInput);
