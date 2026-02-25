@@ -451,10 +451,10 @@ export class BoardView extends ItemView {
     // Tasks by Assignee
     const userCounts = this.data.users.map((u) => ({
       label: u.name,
-      value: tasks.filter((t) => t.assignee === u.name).length,
+      value: tasks.filter((t) => (t.assignees ?? []).includes(u.name)).length,
       color: u.color,
     })).sort((a, b) => b.value - a.value);
-    const unassigned = tasks.filter((t) => !t.assignee).length;
+    const unassigned = tasks.filter((t) => !(t.assignees ?? []).length).length;
     if (unassigned > 0) userCounts.push({ label: "Unassigned", value: unassigned, color: "#6b7280" });
     chartsRow.appendChild(this.buildBarChart("Tasks by Assignee", userCounts));
 

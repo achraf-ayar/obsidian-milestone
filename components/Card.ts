@@ -109,20 +109,20 @@ export function buildCard(
     meta.appendChild(mileBadge);
   }
 
-  // Assignee badge — uses user colour
-  if (task.assignee) {
-    const user = data.users.find((u) => u.name === task.assignee);
+  // Assignee badges — one per assignee, each with their colour
+  (task.assignees ?? []).forEach((name) => {
+    const user = data.users.find((u) => u.name === name);
     const uColor = user?.color ?? "#5eead4";
     const assignBadge = document.createElement("span");
     assignBadge.className = "ms-badge";
     assignBadge.style.cssText = `
-			background: color-mix(in srgb, ${uColor} 15%, transparent);
-			color: ${uColor};
-			border: 1px solid color-mix(in srgb, ${uColor} 35%, transparent);
-		`;
-    assignBadge.textContent = `👤 ${task.assignee}`;
+      background: color-mix(in srgb, ${uColor} 15%, transparent);
+      color: ${uColor};
+      border: 1px solid color-mix(in srgb, ${uColor} 35%, transparent);
+    `;
+    assignBadge.textContent = `👤 ${name}`;
     meta.appendChild(assignBadge);
-  }
+  });
 
   // Tag badges — use each tag's saved colour
   (task.tags ?? []).forEach((tag) => {

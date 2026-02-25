@@ -5,7 +5,7 @@ export interface BoardTask {
   col: string;
   title: string;
   desc: string;
-  assignee: string;
+  assignees: string[];
   milestone: string;
   priority: "high" | "medium" | "low";
   tags: string[];

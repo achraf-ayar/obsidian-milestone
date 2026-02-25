@@ -41,7 +41,7 @@ function buildUserRow(
   data: BoardData,
   onUpdate: (updated: BoardData) => void,
 ): HTMLElement {
-  const taskCount = data.tasks.filter((t) => t.assignee === user.name).length;
+  const taskCount = data.tasks.filter((t) => (t.assignees ?? []).includes(user.name)).length;
 
   const row = document.createElement("div");
   row.className = "ms-item";

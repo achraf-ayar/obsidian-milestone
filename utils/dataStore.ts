@@ -25,8 +25,14 @@ export class DataStore {
       try {
         const raw = await this.app.vault.read(file);
         const parsed = JSON.parse(raw);
+        const tasks = (parsed.tasks ?? SEED_TASKS).map((t: any) => ({
+          ...t,
+          // Migrate old single assignee → assignees array
+          assignees: t.assignees ?? (t.assignee ? [t.assignee] : []),
+          assignee: undefined,
+        }));
         return {
-          tasks: parsed.tasks ?? SEED_TASKS,
+          tasks,
           columns: parsed.columns ?? DEFAULT_COLUMNS,
           users: parsed.users ?? DEFAULT_USERS,
           milestones: parsed.milestones ?? DEFAULT_MILESTONES,

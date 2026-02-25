@@ -13,7 +13,7 @@ export function matchesFilter(task: BoardTask, filters: BoardFilters): boolean {
     if (!inTitle && !inDesc) return false;
   }
 
-  if (assignee && task.assignee !== assignee) return false;
+  if (assignee && !(task.assignees ?? []).includes(assignee)) return false;
   if (milestone && task.milestone !== milestone) return false;
   if (priority && task.priority !== priority) return false;
   if (tag && !(task.tags ?? []).includes(tag)) return false;

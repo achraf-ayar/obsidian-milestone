@@ -94,28 +94,83 @@ export function openTaskModal(
   const row2 = document.createElement("div");
   row2.className = "ms-2col";
 
-  const assignInput = document.createElement("input");
-  assignInput.className = "ms-fi";
-  assignInput.placeholder = "Enter username (e.g., @john)";
-  assignInput.value = task?.assignee ?? "";
-  
-  const assignInputWrapper = document.createElement("div");
-  assignInputWrapper.appendChild(assignInput);
-  
-  if (data.users.length > 0) {
-    const datalistId = "user-datalist-" + uid();
-    const datalist = document.createElement("datalist");
-    datalist.id = datalistId;
-    data.users.forEach((u) => {
-      const opt = document.createElement("option");
-      opt.value = u.name;
-      datalist.appendChild(opt);
-    });
-    assignInput.setAttribute("list", datalistId);
-    assignInputWrapper.appendChild(datalist);
+  // Assignee — pill input (multi-user)
+  const activeAssignees: string[] = [...(task?.assignees ?? [])];
+
+  const assignWrap = document.createElement("div");
+  assignWrap.className = "ms-tag-wrap";
+
+  const assignBareInput = document.createElement("input");
+  assignBareInput.className = "ms-bare";
+  assignBareInput.placeholder = activeAssignees.length === 0 ? "Add assignees…" : "";
+
+  const assignDatalistId = "user-datalist-" + uid();
+  const assignDatalist = document.createElement("datalist");
+  assignDatalist.id = assignDatalistId;
+  data.users.forEach((u) => {
+    const opt = document.createElement("option");
+    opt.value = u.name;
+    assignDatalist.appendChild(opt);
+  });
+  assignBareInput.setAttribute("list", assignDatalistId);
+  assignWrap.appendChild(assignDatalist);
+
+  function getUserColor(name: string): string {
+    return data.users.find((u) => u.name === name)?.color ?? "#5eead4";
   }
-  
-  row2.appendChild(formGroup("Assignee", assignInputWrapper));
+
+  function renderAssigneePills(): void {
+    assignWrap.querySelectorAll(".ms-tag-pill").forEach((p) => p.remove());
+    activeAssignees.forEach((name) => {
+      const color = getUserColor(name);
+      const pill = document.createElement("span");
+      pill.className = "ms-tag-pill";
+      pill.style.cssText = `
+        background: color-mix(in srgb, ${color} 18%, transparent);
+        color: ${color};
+        border: 1px solid color-mix(in srgb, ${color} 35%, transparent);
+      `;
+      const label = document.createElement("span");
+      label.textContent = name;
+      const rm = document.createElement("span");
+      rm.className = "ms-tag-rm";
+      rm.textContent = "×";
+      rm.addEventListener("click", () => {
+        activeAssignees.splice(activeAssignees.indexOf(name), 1);
+        renderAssigneePills();
+      });
+      pill.appendChild(label);
+      pill.appendChild(rm);
+      assignWrap.insertBefore(pill, assignBareInput);
+    });
+    assignBareInput.placeholder = activeAssignees.length === 0 ? "Add assignees…" : "";
+  }
+
+  function commitAssignee(raw: string): void {
+    let name = raw.trim();
+    if (!name) return;
+    if (!name.startsWith("@")) name = "@" + name;
+    if (!activeAssignees.includes(name)) {
+      activeAssignees.push(name);
+      renderAssigneePills();
+    }
+    assignBareInput.value = "";
+  }
+
+  assignBareInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === "," || e.key === "Tab") {
+      if (assignBareInput.value.trim()) { e.preventDefault(); commitAssignee(assignBareInput.value); }
+    } else if (e.key === "Backspace" && assignBareInput.value === "" && activeAssignees.length > 0) {
+      activeAssignees.pop();
+      renderAssigneePills();
+    }
+  });
+  assignBareInput.addEventListener("blur", () => { if (assignBareInput.value.trim()) commitAssignee(assignBareInput.value); });
+  assignWrap.addEventListener("click", () => assignBareInput.focus());
+  assignWrap.appendChild(assignBareInput);
+  renderAssigneePills();
+
+  row2.appendChild(formGroup("Assignees", assignWrap));
 
   const mileInput = document.createElement("input");
   mileInput.className = "ms-fi";
@@ -257,20 +312,22 @@ export function openTaskModal(
     }
 
     const updated = { ...data };
-    
-    // Handle assignee - create user if new
-    let assigneeValue = assignInput.value.trim();
-    if (assigneeValue) {
-      if (!assigneeValue.startsWith("@")) assigneeValue = "@" + assigneeValue;
-      if (!data.users.find((u) => u.name === assigneeValue)) {
-        const newUser: BoardUser = {
-          id: uid(),
-          name: assigneeValue,
-          color: randomColor(),
-          initials: assigneeValue.slice(1, 3).toUpperCase(),
-        };
-        updated.users = [...data.users, newUser];
-      }
+
+    // Commit any unconfirmed assignee text
+    if (assignBareInput.value.trim()) commitAssignee(assignBareInput.value);
+
+    // Auto-create any new users not yet in data.users
+    const existingUserNames = new Set((updated.users ?? []).map((u: BoardUser) => u.name));
+    const newUsers: BoardUser[] = activeAssignees
+      .filter((name) => !existingUserNames.has(name))
+      .map((name) => ({
+        id: uid(),
+        name,
+        color: randomColor(),
+        initials: name.replace(/^@/, "").slice(0, 2).toUpperCase(),
+      }));
+    if (newUsers.length > 0) {
+      updated.users = [...(updated.users ?? []), ...newUsers];
     }
     
     // Handle milestone - create if new
@@ -307,7 +364,7 @@ export function openTaskModal(
       desc: descInput.value.trim(),
       col: statusSel.value,
       priority: priSel.value as BoardTask["priority"],
-      assignee: assigneeValue,
+      assignees: [...activeAssignees],
       milestone: milestoneValue,
       tags: [...activeTags],
     };
