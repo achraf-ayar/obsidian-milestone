@@ -558,6 +558,13 @@ export class BoardView extends ItemView {
   // Filter Application
 
   private applyFilters(): void {
+    const { assignee, milestone, priority, tag, search } = this.filters;
+    if (this.showStats && (assignee || milestone || priority || tag || search)) {
+      this.showStats = false;
+      this.render();
+      return;
+    }
+
     // Update card visibility without full re-render for performance
     this.containerEl
       .querySelectorAll<HTMLElement>(".ms-card")
