@@ -33,8 +33,16 @@ export const SEED_TASKS: BoardTask[] = [];
 
 export interface MilestoneSettings {
   dataFile: string;
+  defaultFilters: {
+    search: string;
+    assignee: string;
+    milestone: string;
+    priority: string;
+    tag: string;
+  };
 }
 
 export const DEFAULT_SETTINGS: MilestoneSettings = {
   dataFile: "milestone-board.json",
+  defaultFilters: { search: "", assignee: "", milestone: "", priority: "", tag: "" },
 };

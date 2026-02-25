@@ -5,6 +5,7 @@ import { STYLES } from "./styles";
 import type MilestoneBoardPlugin from "./main";
 import { buildColumn } from "../components/Column";
 import { openTaskModal } from "../modals/TaskModal";
+import { openSettingsModal } from "../modals/SettingsModal";
 import { buildMilestonesPanel } from "../panels/MilestonePanel";
 import { buildUsersPanel } from "../panels/UsersPanel";
 import { buildTagsPanel } from "../panels/TagsPanel";
@@ -50,6 +51,17 @@ export class BoardView extends ItemView {
   }
 
   async onOpen() {
+    // Apply all saved default filters on every open
+    const df = this.plugin.settings.defaultFilters;
+    if (df) {
+      this.filters = {
+        search: df.search ?? "",
+        assignee: df.assignee ?? "",
+        milestone: df.milestone ?? "",
+        priority: df.priority ?? "",
+        tag: df.tag ?? "",
+      };
+    }
     await this.reload();
   }
   async onClose() {
@@ -271,6 +283,19 @@ export class BoardView extends ItemView {
       openTaskModal(this.data, (d) => this.save(d));
     });
     bar.appendChild(newTaskBtn);
+
+    // Settings button (after New Task)
+    const settingsBtn = document.createElement("button");
+    settingsBtn.className = "ms-btn ms-btn-icon";
+    settingsBtn.title = "Board Settings";
+    settingsBtn.textContent = "⚙";
+    settingsBtn.addEventListener("click", () => {
+      openSettingsModal(this.plugin, this.data, (newFilters) => {
+        this.filters = { ...newFilters };
+        this.render();
+      });
+    });
+    bar.appendChild(settingsBtn);
 
     return bar;
   }

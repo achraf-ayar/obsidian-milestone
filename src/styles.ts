@@ -288,6 +288,7 @@ export const STYLES = `
     color: var(--text-normal); border-radius: 7px; padding: 8px 12px;
     font-family: var(--font-interface); font-size: 13px;
     outline: none; transition: border-color 0.15s; width: 100%;
+    min-width: 0; box-sizing: border-box;
   }
   .ms-fi:focus, .ms-fs:focus, .ms-ft:focus { border-color: var(--color-accent); }
   .ms-ft { resize: vertical; min-height: 72px; }
@@ -339,6 +340,26 @@ export const STYLES = `
   }
   .ms-chart-bar { height: 100%; border-radius: 5px; transition: width 0.5s ease; min-width: 2px; }
   .ms-chart-val { font-size: 11px; font-weight: 600; color: var(--text-normal); width: 32px; text-align: right; flex-shrink: 0; }
+
+  /* Settings icon button (gear) */
+  .ms-btn-icon {
+    background: var(--background-primary); color: var(--text-muted);
+    border: 1px solid var(--background-modifier-border);
+    padding: 6px 10px; font-size: 14px; line-height: 1;
+  }
+  .ms-btn-icon:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  /* Settings Modal extras */
+  .ms-modal-section { display: flex; flex-direction: column; gap: 12px; }
+  .ms-modal-section-title {
+    font-size: 15px; font-weight: 700; color: var(--text-normal);
+    padding-bottom: 8px; border-bottom: 2px solid var(--background-modifier-border);
+  }
+  .ms-modal-section-hint {
+    font-size: 11px; color: var(--text-muted); line-height: 1.6;
+    padding: 8px 12px; background: var(--background-modifier-hover);
+    border-radius: 6px; border-left: 3px solid var(--color-accent);
+  }
 
   /* Tag Input */
   .ms-tag-wrap {
