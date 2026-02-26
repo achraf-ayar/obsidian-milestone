@@ -1,10 +1,13 @@
-import { Plugin, WorkspaceLeaf } from "obsidian";
-
-// Plugin Entry Point
-
+import { Plugin, WorkspaceLeaf, addIcon } from "obsidian";
 import { BoardView } from "./boardView";
 import { MilestoneSettings, VIEW_TYPE, DEFAULT_SETTINGS } from "./constants";
 import { MilestoneSettingTab } from "./settings";
+
+const KANBAN_ICON = [
+  `<rect x="8" y="8" width="22" height="84" rx="4" fill="currentColor"/>`,
+  `<rect x="39" y="8" width="22" height="54" rx="4" fill="currentColor"/>`,
+  `<rect x="70" y="8" width="22" height="68" rx="4" fill="currentColor"/>`,
+].join("");
 
 export default class MilestoneBoardPlugin extends Plugin {
   settings: MilestoneSettings;
@@ -12,14 +15,14 @@ export default class MilestoneBoardPlugin extends Plugin {
   async onload(): Promise<void> {
     await this.loadSettings();
 
-    // Register the board view
+    addIcon("ms-kanban", KANBAN_ICON);
+
     this.registerView(
       VIEW_TYPE,
       (leaf: WorkspaceLeaf) => new BoardView(leaf, this),
     );
 
-    // Ribbon icon
-    this.addRibbonIcon("layout-dashboard", "Open Milestone Board", () => {
+    this.addRibbonIcon("ms-kanban", "Open Milestone Board", () => {
       this.activateView();
     });
 

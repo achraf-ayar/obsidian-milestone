@@ -47,7 +47,7 @@ export class BoardView extends ItemView {
     return "Milestone Board";
   }
   getIcon() {
-    return "layout-dashboard";
+    return "ms-kanban";
   }
 
   async onOpen() {

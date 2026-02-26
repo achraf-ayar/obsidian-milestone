@@ -15,6 +15,7 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 - **Vault-native storage** — all data lives in a single `.json` file, perfect for Git/Sync sharing
 - **Quick create** — add users and milestones on-the-fly from task modal dropdowns
 - **Keyboard shortcut** — press Ctrl+M (Cmd+M on Mac) to open the board instantly
+- **Board Settings** — set default filters that apply every time you open the board, and configure the data file path
 
 ---
 
@@ -31,6 +32,9 @@ Manage tasks, team members, and milestones — all stored as a single JSON file 
 
 ### Team Members Panel
 ![Team Members Panel](screenshots/screenshots4.png)
+
+### Board Settings Modal
+![Board Settings](screenshots/screenshots5.png)
 
 ---
 
@@ -68,6 +72,30 @@ Open the board using any of these methods:
 | Manage milestones  | Click **🏁 Milestones** in the top bar                    |
 | Reorder milestones | Drag rows in the Milestones panel                         |
 | Quick create       | Select **"➕ Create new..."** from assignee/milestone dropdowns in task modal |
+| Open settings      | Click the **⚙ Settings** button in the top bar           |
+
+---
+
+## Board Settings
+
+Click the **⚙ Settings** button in the top bar to open the settings modal.
+
+### Default Filters
+
+Set filters that are applied automatically every time you open the board — no need to re-select them on every session:
+
+| Setting            | Description                                              |
+| ------------------ | -------------------------------------------------------- |
+| Default Search     | Pre-fill the search box with a keyword (e.g. `auth`, `v2`) |
+| Default Assignee   | Show only tasks assigned to a specific team member       |
+| Default Milestone  | Show only tasks belonging to a specific milestone        |
+| Default Priority   | Show only tasks of a chosen priority level               |
+| Default Tag        | Show only tasks carrying a specific tag                  |
+
+### Data File Path
+
+By default, board data is saved to `milestone-board.json` at the root of your vault.  
+You can change this to any path inside your vault (e.g. `team/board.json`) so it fits your folder structure or sync setup.
 
 ---
 
