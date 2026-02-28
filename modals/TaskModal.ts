@@ -171,7 +171,7 @@ export function openTaskModal(
 
   const mileInput = document.createElement("input");
   mileInput.className = "ms-fi";
-  mileInput.placeholder = "Enter milestone (e.g., M4)";
+  mileInput.placeholder = "Milestone name";
   mileInput.value = task?.milestone ?? "";
   
   const mileInputWrapper = document.createElement("div");

@@ -31,7 +31,7 @@ export function openSettingsModal(
 
   const titleEl = document.createElement("div");
   titleEl.className = "ms-modal-title";
-  titleEl.textContent = "⚙ Board settings";
+  titleEl.textContent = "⚙ board settings";
 
   const closeBtn = document.createElement("button");
   closeBtn.className = "ms-btn ms-btn-ghost ms-btn-close";
@@ -58,7 +58,7 @@ export function openSettingsModal(
   // Search
   const searchInput = document.createElement("input");
   searchInput.className = "ms-fi";
-  searchInput.placeholder = "e.g. auth, bug, v2…";
+  searchInput.placeholder = "Search keyword";
   searchInput.value = df.search;
   filtersSection.appendChild(mkGroup("Default search", searchInput));
 
@@ -126,7 +126,7 @@ export function openSettingsModal(
 
   const fileInput = document.createElement("input");
   fileInput.className = "ms-fi";
-  fileInput.placeholder = "milestone-board.json";
+  fileInput.placeholder = "path/to/board-data.json";
   fileInput.value = plugin.settings.dataFile ?? "milestone-board.json";
   dataSection.appendChild(mkGroup("Data file path", fileInput));
 
@@ -144,7 +144,7 @@ export function openSettingsModal(
 
   const saveBtn = document.createElement("button");
   saveBtn.className = "ms-btn ms-btn-primary";
-  saveBtn.textContent = "💾 Save settings";
+  saveBtn.textContent = "💾 save settings";
   saveBtn.addEventListener("click", () => {
     const newFilters = {
       search: searchInput.value.trim(),

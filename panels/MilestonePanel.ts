@@ -237,7 +237,7 @@ function buildAddMilestoneForm(
 
   const addBtn = document.createElement("button");
   addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
-  addBtn.textContent = "+ Add milestone";
+  addBtn.textContent = "+ add milestone";
   addBtn.addEventListener("click", () => {
     const name = nameInput.value.trim();
     if (!name) {

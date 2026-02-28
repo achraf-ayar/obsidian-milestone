@@ -131,7 +131,7 @@ function buildAddUserForm(
 
   const addBtn = document.createElement("button");
   addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
-  addBtn.textContent = "＋ Add member";
+  addBtn.textContent = "＋ add member";
   addBtn.addEventListener("click", () => {
     let name = nameInput.value.trim();
     if (!name) return;

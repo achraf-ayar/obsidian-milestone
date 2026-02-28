@@ -82,7 +82,7 @@ export function buildColumn(
   // Add-card button
   const addBtn = document.createElement("button");
   addBtn.className = "ms-add-card-btn";
-  addBtn.textContent = "＋ Add card";
+  addBtn.textContent = "＋ add card";
   addBtn.addEventListener("click", () => cb.onAddCard(col.id));
   el.appendChild(addBtn);
 

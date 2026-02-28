@@ -125,14 +125,14 @@ function buildAddTagForm(
 
   const nameInput = document.createElement("input");
   nameInput.className = "ms-small-input";
-  nameInput.placeholder = "Tag name (e.g. bug)";
+  nameInput.placeholder = "Tag name";
   nameRow.appendChild(nameInput);
 
   form.appendChild(nameRow);
 
   const addBtn = document.createElement("button");
   addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
-  addBtn.textContent = "＋ Add tag";
+  addBtn.textContent = "＋ add tag";
   addBtn.addEventListener("click", () => {
     const name = nameInput.value.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase();
     if (!name) { nameInput.focus(); return; }

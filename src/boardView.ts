@@ -146,7 +146,7 @@ export class BoardView extends ItemView {
     // Logo
     const logo = document.createElement("div");
     logo.className = "ms-logo";
-    logo.textContent = "◈ Milestone";
+    logo.textContent = "◈ milestone";
     bar.appendChild(logo);
 
     // Filters
@@ -155,7 +155,7 @@ export class BoardView extends ItemView {
 
     const searchInput = document.createElement("input");
     searchInput.className = "ms-input";
-    searchInput.placeholder = "🔍 Search…";
+    searchInput.placeholder = "🔍 search…";
     searchInput.value = this.filters.search;
     searchInput.addEventListener("input", () => {
       this.filters.search = searchInput.value;
@@ -206,7 +206,7 @@ export class BoardView extends ItemView {
 
     const clearBtn = document.createElement("button");
     clearBtn.className = "ms-btn ms-btn-ghost ms-btn-clear";
-    clearBtn.textContent = "✕ Clear";
+    clearBtn.textContent = "✕ clear";
     clearBtn.addEventListener("click", () => {
       this.filters = {
         search: "",
@@ -224,7 +224,7 @@ export class BoardView extends ItemView {
     const usersBtn = document.createElement("button");
     usersBtn.className =
       "ms-btn ms-btn-panel" + (this.activePanel === "users" ? " active" : "");
-    usersBtn.textContent = "👥 Users";
+    usersBtn.textContent = "👥 users";
     usersBtn.addEventListener("click", () => {
       this.showStats = false;
       this.activePanel = this.activePanel === "users" ? null : "users";
@@ -236,7 +236,7 @@ export class BoardView extends ItemView {
     milesBtn.className =
       "ms-btn ms-btn-panel" +
       (this.activePanel === "milestones" ? " active" : "");
-    milesBtn.textContent = "🏁 Milestones";
+    milesBtn.textContent = "🏁 milestones";
     milesBtn.addEventListener("click", () => {
       this.showStats = false;
       this.activePanel = this.activePanel === "milestones" ? null : "milestones";
@@ -247,7 +247,7 @@ export class BoardView extends ItemView {
     const tagsBtn = document.createElement("button");
     tagsBtn.className =
       "ms-btn ms-btn-panel" + (this.activePanel === "tags" ? " active" : "");
-    tagsBtn.textContent = "🏷 Tags";
+    tagsBtn.textContent = "🏷 tags";
     tagsBtn.addEventListener("click", () => {
       this.showStats = false;
       this.activePanel = this.activePanel === "tags" ? null : "tags";
@@ -258,7 +258,7 @@ export class BoardView extends ItemView {
     const statsBtn = document.createElement("button");
     statsBtn.className =
       "ms-btn ms-btn-panel" + (this.showStats ? " active" : "");
-    statsBtn.textContent = "📊 Stats";
+    statsBtn.textContent = "📊 stats";
     statsBtn.addEventListener("click", () => {
       this.showStats = !this.showStats;
       if (this.showStats) this.activePanel = null;
@@ -269,7 +269,7 @@ export class BoardView extends ItemView {
     // New task button
     const newTaskBtn = document.createElement("button");
     newTaskBtn.className = "ms-btn ms-btn-primary";
-    newTaskBtn.textContent = "＋ New task";
+    newTaskBtn.textContent = "＋ new task";
     newTaskBtn.addEventListener("click", () => {
       openTaskModal(this.data, (d) => { void this.save(d); });
     });
