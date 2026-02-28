@@ -40,8 +40,7 @@ export function buildPanelHeader(title: string, onClose: () => void): HTMLElemen
   titleEl.className = "ms-panel-title";
   titleEl.textContent = title;
   const closeBtn = document.createElement("button");
-  closeBtn.className = "ms-btn ms-btn-ghost";
-  closeBtn.style.padding = "4px 10px";
+  closeBtn.className = "ms-btn ms-btn-ghost ms-btn-close";
   closeBtn.textContent = "✕";
   closeBtn.addEventListener("click", onClose);
   header.appendChild(titleEl);
@@ -51,10 +50,10 @@ export function buildPanelHeader(title: string, onClose: () => void): HTMLElemen
 
 /** Build a section label. */
 export function sectionLabel(text: string): HTMLElement {
-  const el = document.createElement("div");
-  el.className = "ms-section-label";
-  el.textContent = text;
-  return el;
+  const node = document.createElement("div");
+  node.className = "ms-section-label";
+  node.textContent = text;
+  return node;
 }
 
 /** Generate a random hex color. */

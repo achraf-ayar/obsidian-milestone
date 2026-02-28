@@ -44,7 +44,7 @@ export function buildColumn(
 
   const dot = document.createElement("span");
   dot.className = "ms-col-dot";
-  dot.style.background = col.color;
+  dot.setCssProps({ "--ms-col-dot-bg": col.color });
   titleWrap.appendChild(dot);
   titleWrap.appendChild(document.createTextNode(col.label));
 
@@ -65,7 +65,12 @@ export function buildColumn(
   if (colTasks.length === 0) {
     const empty = document.createElement("div");
     empty.className = "ms-empty";
-    empty.innerHTML = "No tasks<br>Drop cards here";
+    const line1 = document.createTextNode("No tasks");
+    const br = document.createElement("br");
+    const line2 = document.createTextNode("Drop cards here");
+    empty.appendChild(line1);
+    empty.appendChild(br);
+    empty.appendChild(line2);
     body.appendChild(empty);
   } else {
     colTasks.forEach((task) => {

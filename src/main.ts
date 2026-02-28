@@ -22,29 +22,25 @@ export default class MilestoneBoardPlugin extends Plugin {
       (leaf: WorkspaceLeaf) => new BoardView(leaf, this),
     );
 
-    this.addRibbonIcon("ms-kanban", "Open Milestone Board", () => {
-      this.activateView();
+    this.addRibbonIcon("ms-kanban", "Open milestone board", () => {
+      void this.activateView();
     });
 
-    // Command palette entry with keyboard shortcut
+    // Command palette entry
     this.addCommand({
-      id: "open-milestone-board",
-      name: "Open Milestone Board",
-      callback: () => this.activateView(),
-      hotkeys: [
-        {
-          modifiers: ["Mod"],
-          key: "m",
-        },
-      ],
+      id: "open-board",
+      name: "Open board",
+      callback: () => {
+        void this.activateView();
+      },
     });
 
     // Settings tab
     this.addSettingTab(new MilestoneSettingTab(this.app, this));
   }
 
-  async onunload(): Promise<void> {
-    this.app.workspace.detachLeavesOfType(VIEW_TYPE);
+  onunload(): void {
+    // Nothing to clean up — Obsidian handles leaf lifecycle
   }
 
   private async activateView(): Promise<void> {

@@ -23,8 +23,7 @@ export function openSettingsModal(
   overlay.className = "ms-overlay";
 
   const modal = document.createElement("div");
-  modal.className = "ms-modal";
-  modal.style.width = "520px";
+  modal.className = "ms-modal ms-modal-settings";
 
   // Header
   const hd = document.createElement("div");
@@ -32,11 +31,10 @@ export function openSettingsModal(
 
   const titleEl = document.createElement("div");
   titleEl.className = "ms-modal-title";
-  titleEl.textContent = "⚙ Board Settings";
+  titleEl.textContent = "⚙ Board settings";
 
   const closeBtn = document.createElement("button");
-  closeBtn.className = "ms-btn ms-btn-ghost";
-  closeBtn.style.padding = "4px 10px";
+  closeBtn.className = "ms-btn ms-btn-ghost ms-btn-close";
   closeBtn.textContent = "✕";
   closeBtn.addEventListener("click", () => overlay.remove());
 
@@ -54,7 +52,7 @@ export function openSettingsModal(
 
   const filtersSectionTitle = document.createElement("div");
   filtersSectionTitle.className = "ms-modal-section-title";
-  filtersSectionTitle.textContent = "Default Filters";
+  filtersSectionTitle.textContent = "Default filters";
   filtersSection.appendChild(filtersSectionTitle);
 
   // Search
@@ -62,7 +60,7 @@ export function openSettingsModal(
   searchInput.className = "ms-fi";
   searchInput.placeholder = "e.g. auth, bug, v2…";
   searchInput.value = df.search;
-  filtersSection.appendChild(mkGroup("Default Search", searchInput));
+  filtersSection.appendChild(mkGroup("Default search", searchInput));
 
   // 2-col row: Assignee + Milestone
   const row1 = document.createElement("div");
@@ -73,8 +71,8 @@ export function openSettingsModal(
     data.users.map((u) => ({ value: u.name, label: u.name })),
     df.assignee,
   );
-  assignSel.style.width = "100%";
-  row1.appendChild(mkGroup("Default Assignee", assignSel));
+  assignSel.classList.add("ms-fs-full");
+  row1.appendChild(mkGroup("Default assignee", assignSel));
 
   const mileSel = mkSelect(
     "🏁 Any milestone",
@@ -83,8 +81,8 @@ export function openSettingsModal(
       .map((m) => ({ value: m.name, label: m.name })),
     df.milestone,
   );
-  mileSel.style.width = "100%";
-  row1.appendChild(mkGroup("Default Milestone", mileSel));
+  mileSel.classList.add("ms-fs-full");
+  row1.appendChild(mkGroup("Default milestone", mileSel));
   filtersSection.appendChild(row1);
 
   // 2-col row: Priority + Tag
@@ -100,16 +98,16 @@ export function openSettingsModal(
     ],
     df.priority,
   );
-  priSel.style.width = "100%";
-  row2.appendChild(mkGroup("Default Priority", priSel));
+  priSel.classList.add("ms-fs-full");
+  row2.appendChild(mkGroup("Default priority", priSel));
 
   const tagSel = mkSelect(
     "🏷 Any tag",
     data.tags.map((t) => ({ value: t.name, label: `#${t.name}` })),
     df.tag,
   );
-  tagSel.style.width = "100%";
-  row2.appendChild(mkGroup("Default Tag", tagSel));
+  tagSel.classList.add("ms-fs-full");
+  row2.appendChild(mkGroup("Default tag", tagSel));
   filtersSection.appendChild(row2);
 
   body.appendChild(filtersSection);
@@ -146,8 +144,8 @@ export function openSettingsModal(
 
   const saveBtn = document.createElement("button");
   saveBtn.className = "ms-btn ms-btn-primary";
-  saveBtn.textContent = "💾 Save Settings";
-  saveBtn.addEventListener("click", async () => {
+  saveBtn.textContent = "💾 Save settings";
+  saveBtn.addEventListener("click", () => {
     const newFilters = {
       search: searchInput.value.trim(),
       assignee: assignSel.value,
@@ -159,7 +157,7 @@ export function openSettingsModal(
 
     plugin.settings.defaultFilters = newFilters;
     plugin.settings.dataFile = newDataFile;
-    await plugin.saveSettings();
+    void plugin.saveSettings();
 
     overlay.remove();
     onSave(newFilters);
@@ -217,7 +215,6 @@ function mkSelect(
 
 function mkDivider(): HTMLElement {
   const d = document.createElement("div");
-  d.style.cssText =
-    "height:1px;background:var(--background-modifier-border);margin:2px 0;";
+  d.className = "ms-divider";
   return d;
 }

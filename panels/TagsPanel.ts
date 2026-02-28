@@ -18,7 +18,7 @@ export function buildTagsPanel(
   const body = document.createElement("div");
   body.className = "ms-panel-body";
 
-  body.appendChild(sectionLabel("Current Tags"));
+  body.appendChild(sectionLabel("Current tags"));
 
   if (data.tags.length === 0) {
     const empty = document.createElement("div");
@@ -31,7 +31,7 @@ export function buildTagsPanel(
     });
   }
 
-  body.appendChild(sectionLabel("Add Tag"));
+  body.appendChild(sectionLabel("Add tag"));
   body.appendChild(buildAddTagForm(data, onUpdate));
 
   panel.appendChild(body);
@@ -59,7 +59,7 @@ function buildTagRow(
   colorInput.addEventListener("input", () => {
     // Live preview without saving
     tag.color = colorInput.value;
-    pill.style.background = colorInput.value;
+    pill.setCssProps({ "--ms-avatar-bg": colorInput.value });
   });
   colorInput.addEventListener("change", () => {
     // Save only when the picker is closed/committed
@@ -69,11 +69,8 @@ function buildTagRow(
 
   // Tag pill preview
   const pill = document.createElement("div");
-  pill.className = "ms-avatar";
-  pill.style.background = tag.color;
-  pill.style.borderRadius = "6px";
-  pill.style.fontSize = "10px";
-  pill.style.fontWeight = "700";
+  pill.className = "ms-avatar ms-tag-preview";
+  pill.setCssProps({ "--ms-avatar-bg": tag.color });
   pill.textContent = "#";
   row.appendChild(pill);
 
@@ -134,14 +131,13 @@ function buildAddTagForm(
   form.appendChild(nameRow);
 
   const addBtn = document.createElement("button");
-  addBtn.className = "ms-btn ms-btn-primary";
-  addBtn.style.width = "100%";
-  addBtn.textContent = "＋ Add Tag";
+  addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
+  addBtn.textContent = "＋ Add tag";
   addBtn.addEventListener("click", () => {
-    let name = nameInput.value.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase();
+    const name = nameInput.value.trim().replace(/^#/, "").replace(/\s+/g, "-").toLowerCase();
     if (!name) { nameInput.focus(); return; }
     if (data.tags.find((t) => t.name === name)) {
-      new Notice("Milestone Board: Tag already exists.");
+      new Notice("Milestone board: tag already exists.");
       return;
     }
     const newTag: BoardTag = { id: uid(), name, color: colorPick.value };

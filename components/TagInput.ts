@@ -49,7 +49,10 @@ export class TagInput {
   }
 
   private render(): void {
-    this.el.innerHTML = "";
+    // Remove all children except bareInput
+    while (this.el.firstChild) {
+      this.el.removeChild(this.el.firstChild);
+    }
 
     this.tags.forEach((tag) => {
       const pill = document.createElement("span");

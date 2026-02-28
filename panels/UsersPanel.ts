@@ -15,19 +15,19 @@ export function buildUsersPanel(
   panel.className = "ms-panel";
 
   // Header
-  panel.appendChild(buildPanelHeader("👥 Team Members", onClose));
+  panel.appendChild(buildPanelHeader("👥 Team members", onClose));
 
   const body = document.createElement("div");
   body.className = "ms-panel-body";
 
   // Section: existing members
-  body.appendChild(sectionLabel("Current Members"));
+  body.appendChild(sectionLabel("Current members"));
   data.users.forEach((user) => {
     body.appendChild(buildUserRow(user, data, onUpdate));
   });
 
   // Section: add member
-  body.appendChild(sectionLabel("Add Member"));
+  body.appendChild(sectionLabel("Add member"));
   body.appendChild(buildAddUserForm(data, onUpdate));
 
   panel.appendChild(body);
@@ -49,17 +49,24 @@ function buildUserRow(
   // Avatar
   const avatar = document.createElement("div");
   avatar.className = "ms-avatar";
-  avatar.style.background = user.color;
+  avatar.setCssProps({ "--ms-avatar-bg": user.color });
   avatar.textContent = user.initials || user.name.slice(1, 3).toUpperCase();
   row.appendChild(avatar);
 
   // Info
   const info = document.createElement("div");
   info.className = "ms-item-info";
-  info.innerHTML = `
-		<div class="ms-item-name">${user.name}</div>
-		<div class="ms-item-sub">${taskCount} task${taskCount !== 1 ? "s" : ""} assigned</div>
-	`;
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "ms-item-name";
+  nameEl.textContent = user.name;
+  info.appendChild(nameEl);
+
+  const subEl = document.createElement("div");
+  subEl.className = "ms-item-sub";
+  subEl.textContent = `${taskCount} task${taskCount !== 1 ? "s" : ""} assigned`;
+  info.appendChild(subEl);
+
   // Colour picker (placed before info so popup opens rightward)
   const colorInput = document.createElement("input");
   colorInput.type = "color";
@@ -69,7 +76,7 @@ function buildUserRow(
   colorInput.addEventListener("input", () => {
     // Live preview without saving
     user.color = colorInput.value;
-    avatar.style.background = colorInput.value;
+    avatar.setCssProps({ "--ms-avatar-bg": colorInput.value });
   });
   colorInput.addEventListener("change", () => {
     // Save only when the picker is closed/committed
@@ -123,15 +130,14 @@ function buildAddUserForm(
   form.appendChild(nameRow);
 
   const addBtn = document.createElement("button");
-  addBtn.className = "ms-btn ms-btn-primary";
-  addBtn.style.width = "100%";
-  addBtn.textContent = "＋ Add Member";
+  addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
+  addBtn.textContent = "＋ Add member";
   addBtn.addEventListener("click", () => {
     let name = nameInput.value.trim();
     if (!name) return;
     if (!name.startsWith("@")) name = "@" + name;
     if (data.users.find((u) => u.name === name)) {
-      new Notice("Milestone Board: User already exists.");
+      new Notice("Milestone board: user already exists.");
       return;
     }
     const newUser: BoardUser = {
@@ -149,4 +155,3 @@ function buildAddUserForm(
 
   return form;
 }
-

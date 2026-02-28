@@ -1,6 +1,20 @@
 import { App, Notice, TFile } from "obsidian";
 import { SEED_TASKS, DEFAULT_COLUMNS, DEFAULT_USERS, DEFAULT_MILESTONES, DEFAULT_TAGS } from "../src/constants";
-import { BoardData } from "../src/types";
+import { BoardData, BoardTask } from "../src/types";
+
+/** Legacy task shape that may include a single `assignee` field. */
+interface LegacyTask extends BoardTask {
+  assignee?: string;
+}
+
+/** Shape of the raw JSON before migration. */
+interface RawBoardData {
+  tasks?: LegacyTask[];
+  columns?: BoardData["columns"];
+  users?: BoardData["users"];
+  milestones?: BoardData["milestones"];
+  tags?: BoardData["tags"];
+}
 
 
 // Data Store: reads and writes the board JSON file in the vault
@@ -24,12 +38,19 @@ export class DataStore {
     if (file instanceof TFile) {
       try {
         const raw = await this.app.vault.read(file);
-        const parsed = JSON.parse(raw);
-        const tasks = (parsed.tasks ?? SEED_TASKS).map((t: any) => ({
-          ...t,
+        const parsed = JSON.parse(raw) as RawBoardData;
+        const rawTasks: LegacyTask[] = parsed.tasks ?? SEED_TASKS;
+        const tasks: BoardTask[] = rawTasks.map((t) => ({
+          id: t.id,
+          col: t.col,
+          title: t.title,
+          desc: t.desc,
+          priority: t.priority,
+          milestone: t.milestone,
+          tags: t.tags,
+          createdAt: t.createdAt,
           // Migrate old single assignee → assignees array
           assignees: t.assignees ?? (t.assignee ? [t.assignee] : []),
-          assignee: undefined,
         }));
         return {
           tasks,
@@ -40,7 +61,7 @@ export class DataStore {
         };
       } catch {
         new Notice(
-          "Milestone Board: Could not parse data file — using defaults.",
+          "Milestone board: could not parse data file — using defaults.",
         );
       }
     }

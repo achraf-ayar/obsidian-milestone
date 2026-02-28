@@ -13,8 +13,7 @@ export function openMilestoneEditModal(
   overlay.className = "ms-overlay";
 
   const modal = document.createElement("div");
-  modal.className = "ms-modal";
-  modal.style.width = "360px";
+  modal.className = "ms-modal ms-modal-milestone-edit";
 
   // Header
   const hd = document.createElement("div");
@@ -22,11 +21,10 @@ export function openMilestoneEditModal(
 
   const titleEl = document.createElement("div");
   titleEl.className = "ms-modal-title";
-  titleEl.textContent = "Edit Milestone";
+  titleEl.textContent = "Edit milestone";
 
   const closeBtn = document.createElement("button");
-  closeBtn.className = "ms-btn ms-btn-ghost";
-  closeBtn.style.padding = "4px 10px";
+  closeBtn.className = "ms-btn ms-btn-ghost ms-btn-close";
   closeBtn.textContent = "✕";
   closeBtn.addEventListener("click", () => overlay.remove());
 
@@ -53,13 +51,12 @@ export function openMilestoneEditModal(
 
   const colorIn = document.createElement("input");
   colorIn.type = "color";
-  colorIn.className = "ms-fi";
+  colorIn.className = "ms-fi ms-fi-color";
   colorIn.value = milestone.color;
-  colorIn.style.height = "40px";
 
   body.appendChild(formGroup("Name", nameIn));
   body.appendChild(formGroup("Label", labelIn));
-  body.appendChild(formGroup("Due Date", dueIn));
+  body.appendChild(formGroup("Due date", dueIn));
   body.appendChild(formGroup("Color", colorIn));
   modal.appendChild(body);
 

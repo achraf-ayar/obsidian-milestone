@@ -1,6 +1,4 @@
 
-import { Notice } from "obsidian";
-
 import { uid } from "../utils/uid";
 import { formGroup, trapEscape, randomColor } from "../utils/dom";
 import { BoardData, BoardTask, BoardUser, BoardMilestone, BoardTag } from "../src/types";
@@ -27,11 +25,10 @@ export function openTaskModal(
 
   const titleEl = document.createElement("div");
   titleEl.className = "ms-modal-title";
-  titleEl.textContent = task ? "Edit Task" : "New Task";
+  titleEl.textContent = task ? "Edit task" : "New task";
 
   const closeBtn = document.createElement("button");
-  closeBtn.className = "ms-btn ms-btn-ghost";
-  closeBtn.style.padding = "4px 10px";
+  closeBtn.className = "ms-btn ms-btn-ghost ms-btn-close";
   closeBtn.textContent = "✕";
   closeBtn.addEventListener("click", () => overlay.remove());
 
@@ -125,11 +122,11 @@ export function openTaskModal(
       const color = getUserColor(name);
       const pill = document.createElement("span");
       pill.className = "ms-tag-pill";
-      pill.style.cssText = `
-        background: color-mix(in srgb, ${color} 18%, transparent);
-        color: ${color};
-        border: 1px solid color-mix(in srgb, ${color} 35%, transparent);
-      `;
+      pill.setCssProps({
+        "--ms-pill-bg": `color-mix(in srgb, ${color} 18%, transparent)`,
+        "--ms-pill-color": color,
+        "--ms-pill-border": `color-mix(in srgb, ${color} 35%, transparent)`,
+      });
       const label = document.createElement("span");
       label.textContent = name;
       const rm = document.createElement("span");
@@ -236,11 +233,11 @@ export function openTaskModal(
       const color = getTagColor(name);
       const pill = document.createElement("span");
       pill.className = "ms-tag-pill";
-      pill.style.cssText = `
-        background: color-mix(in srgb, ${color} 18%, transparent);
-        color: ${color};
-        border: 1px solid color-mix(in srgb, ${color} 35%, transparent);
-      `;
+      pill.setCssProps({
+        "--ms-pill-bg": `color-mix(in srgb, ${color} 18%, transparent)`,
+        "--ms-pill-color": color,
+        "--ms-pill-border": `color-mix(in srgb, ${color} 35%, transparent)`,
+      });
       const label = document.createElement("span");
       label.textContent = "#" + name;
       const rm = document.createElement("span");
@@ -302,11 +299,11 @@ export function openTaskModal(
 
   const saveBtn = document.createElement("button");
   saveBtn.className = "ms-btn ms-btn-primary";
-  saveBtn.textContent = "Save Task";
+  saveBtn.textContent = "Save task";
   saveBtn.addEventListener("click", () => {
     const title = titleInput.value.trim();
     if (!title) {
-      titleInput.style.borderColor = "#ef4444";
+      titleInput.classList.add("ms-error");
       titleInput.focus();
       return;
     }
@@ -331,7 +328,7 @@ export function openTaskModal(
     }
     
     // Handle milestone - create if new
-    let milestoneValue = mileInput.value.trim();
+    const milestoneValue = mileInput.value.trim();
     if (milestoneValue) {
       if (!data.milestones.find((m) => m.name === milestoneValue)) {
         const maxOrder = data.milestones.reduce((max, m) => Math.max(max, m.order), 0);

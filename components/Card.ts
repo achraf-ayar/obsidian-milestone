@@ -49,7 +49,7 @@ export function buildCard(
   // Priority left bar
   const priBar = document.createElement("div");
   priBar.className = "ms-pri-bar";
-  priBar.style.background = priColor;
+  priBar.setCssProps({ "--ms-pri-bg": priColor });
   card.appendChild(priBar);
 
   // Action buttons (visible on hover)
@@ -100,11 +100,11 @@ export function buildCard(
     const msColor = ms?.color ?? "#3b82f6";
     const mileBadge = document.createElement("span");
     mileBadge.className = "ms-badge";
-    mileBadge.style.cssText = `
-			background: color-mix(in srgb, ${msColor} 15%, transparent);
-			color: ${msColor};
-			border: 1px solid color-mix(in srgb, ${msColor} 35%, transparent);
-		`;
+    mileBadge.setCssProps({
+      "--ms-badge-bg": `color-mix(in srgb, ${msColor} 15%, transparent)`,
+      "--ms-badge-color": msColor,
+      "--ms-badge-border": `color-mix(in srgb, ${msColor} 35%, transparent)`,
+    });
     mileBadge.textContent = `🏁 ${task.milestone}`;
     meta.appendChild(mileBadge);
   }
@@ -115,11 +115,11 @@ export function buildCard(
     const uColor = user?.color ?? "#5eead4";
     const assignBadge = document.createElement("span");
     assignBadge.className = "ms-badge";
-    assignBadge.style.cssText = `
-      background: color-mix(in srgb, ${uColor} 15%, transparent);
-      color: ${uColor};
-      border: 1px solid color-mix(in srgb, ${uColor} 35%, transparent);
-    `;
+    assignBadge.setCssProps({
+      "--ms-badge-bg": `color-mix(in srgb, ${uColor} 15%, transparent)`,
+      "--ms-badge-color": uColor,
+      "--ms-badge-border": `color-mix(in srgb, ${uColor} 35%, transparent)`,
+    });
     assignBadge.textContent = `👤 ${name}`;
     meta.appendChild(assignBadge);
   });
@@ -130,11 +130,11 @@ export function buildCard(
     const tColor = tagData?.color ?? "#a78bfa";
     const tagBadge = document.createElement("span");
     tagBadge.className = "ms-badge";
-    tagBadge.style.cssText = `
-      background: color-mix(in srgb, ${tColor} 15%, transparent);
-      color: ${tColor};
-      border: 1px solid color-mix(in srgb, ${tColor} 35%, transparent);
-    `;
+    tagBadge.setCssProps({
+      "--ms-badge-bg": `color-mix(in srgb, ${tColor} 15%, transparent)`,
+      "--ms-badge-color": tColor,
+      "--ms-badge-border": `color-mix(in srgb, ${tColor} 35%, transparent)`,
+    });
     tagBadge.textContent = `#${tag}`;
     meta.appendChild(tagBadge);
   });

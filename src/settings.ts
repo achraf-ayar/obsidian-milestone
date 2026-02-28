@@ -15,7 +15,9 @@ export class MilestoneSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Milestone Board Settings" });
+    new Setting(containerEl)
+      .setName("Milestone board settings")
+      .setHeading();
 
     new Setting(containerEl)
       .setName("Data file path")
@@ -24,9 +26,9 @@ export class MilestoneSettingTab extends PluginSettingTab {
         text
           .setPlaceholder("milestone-board.json")
           .setValue(this.plugin.settings.dataFile)
-          .onChange(async (value) => {
+          .onChange((value) => {
             this.plugin.settings.dataFile = value || "milestone-board.json";
-            await this.plugin.saveSettings();
+            void this.plugin.saveSettings();
           })
       );
   }

@@ -44,7 +44,7 @@ export function buildMilestonesPanel(
     );
   });
 
-  body.appendChild(sectionLabel("Add Milestone"));
+  body.appendChild(sectionLabel("Add milestone"));
   body.appendChild(buildAddMilestoneForm(data, onUpdate));
   panel.appendChild(body);
   return panel;
@@ -79,11 +79,11 @@ function buildMilestoneRow(
 
   row.addEventListener("dragstart", () => {
     dragCb.onDragStart(mile.id);
-    row.style.opacity = "0.4";
+    row.classList.add("ms-dragging");
   });
   row.addEventListener("dragend", () => {
     dragCb.onDragEnd();
-    row.style.opacity = "1";
+    row.classList.remove("ms-dragging");
   });
   row.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -107,7 +107,7 @@ function buildMilestoneRow(
   // Order badge (coloured)
   const badge = document.createElement("div");
   badge.className = "ms-mile-badge";
-  badge.style.background = mile.color;
+  badge.setCssProps({ "--ms-mile-bg": mile.color });
   badge.textContent = String(mile.order);
   row.appendChild(badge);
 
@@ -122,8 +122,7 @@ function buildMilestoneRow(
 
   if (mile.dueDate) {
     const dueEl = document.createElement("div");
-    dueEl.className = "ms-item-sub";
-    dueEl.style.color = isOverdue ? "#f87171" : "";
+    dueEl.className = "ms-item-sub" + (isOverdue ? " ms-overdue" : "");
     const dateStr = new Date(mile.dueDate).toLocaleDateString();
     dueEl.textContent = `Due: ${dateStr}${isOverdue ? " \u26a0\ufe0f Overdue" : ""}`;
     info.appendChild(dueEl);
@@ -134,14 +133,15 @@ function buildMilestoneRow(
   progWrap.className = "ms-progress";
   const progFill = document.createElement("div");
   progFill.className = "ms-progress-fill";
-  progFill.style.width = `${pct}%`;
-  progFill.style.background = mile.color;
+  progFill.setCssProps({
+    "--ms-progress-width": `${pct}%`,
+    "--ms-progress-bg": mile.color,
+  });
   progWrap.appendChild(progFill);
   info.appendChild(progWrap);
 
   const progText = document.createElement("div");
-  progText.style.cssText =
-    "font-size:10px;color:var(--text-faint);margin-top:3px";
+  progText.className = "ms-progress-text";
   progText.textContent = `${taskDone}/${taskTotal} done (${pct}%)`;
   info.appendChild(progText);
 
@@ -154,8 +154,11 @@ function buildMilestoneRow(
   colorInput.addEventListener("input", () => {
     // Live preview without saving
     mile.color = colorInput.value;
-    badge.style.background = colorInput.value;
-    progFill.style.background = colorInput.value;
+    badge.setCssProps({ "--ms-mile-bg": colorInput.value });
+    progFill.setCssProps({
+      "--ms-progress-width": `${pct}%`,
+      "--ms-progress-bg": colorInput.value,
+    });
   });
   colorInput.addEventListener("change", () => {
     // Save only when the picker is closed/committed
@@ -233,9 +236,8 @@ function buildAddMilestoneForm(
   form.appendChild(row2);
 
   const addBtn = document.createElement("button");
-  addBtn.className = "ms-btn ms-btn-primary";
-  addBtn.style.width = "100%";
-  addBtn.textContent = "+ Add Milestone";
+  addBtn.className = "ms-btn ms-btn-primary ms-btn-full";
+  addBtn.textContent = "+ Add milestone";
   addBtn.addEventListener("click", () => {
     const name = nameInput.value.trim();
     if (!name) {
@@ -243,7 +245,7 @@ function buildAddMilestoneForm(
       return;
     }
     if (data.milestones.find((m) => m.name === name)) {
-      new Notice("Milestone Board: Name already exists.");
+      new Notice("Milestone board: name already exists.");
       return;
     }
     const maxOrder = data.milestones.reduce(
@@ -271,4 +273,3 @@ function buildAddMilestoneForm(
   form.appendChild(addBtn);
   return form;
 }
-

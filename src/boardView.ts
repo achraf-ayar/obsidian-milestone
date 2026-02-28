@@ -1,7 +1,6 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import type { BoardData, BoardFilters, ActivePanel } from "./types";
 import { VIEW_TYPE } from "./constants";
-import { STYLES } from "./styles";
 import type MilestoneBoardPlugin from "./main";
 import { buildColumn } from "../components/Column";
 import { openTaskModal } from "../modals/TaskModal";
@@ -44,7 +43,7 @@ export class BoardView extends ItemView {
     return VIEW_TYPE;
   }
   getDisplayText() {
-    return "Milestone Board";
+    return "Milestone board";
   }
   getIcon() {
     return "ms-kanban";
@@ -87,13 +86,6 @@ export class BoardView extends ItemView {
     const root = this.containerEl.children[1] as HTMLElement;
     root.empty();
     root.addClass("ms-root");
-    root.style.cssText =
-      "display:flex;flex-direction:column;height:100%;overflow:hidden;";
-
-    // Inject styles once
-    const styleEl = document.createElement("style");
-    styleEl.textContent = STYLES;
-    root.appendChild(styleEl);
 
     root.appendChild(this.buildTopbar());
     root.appendChild(this.buildStatsbar());
@@ -104,14 +96,14 @@ export class BoardView extends ItemView {
     }
 
     const body = document.createElement("div");
-    body.style.cssText = "display:flex;flex:1;overflow:hidden;";
+    body.className = "ms-body-wrap";
     body.appendChild(this.buildBoard());
 
     if (this.activePanel === "users") {
       body.appendChild(
         buildUsersPanel(
           this.data,
-          (d) => this.save(d),
+          (d) => { void this.save(d); },
           () => {
             this.activePanel = null;
             this.render();
@@ -122,7 +114,7 @@ export class BoardView extends ItemView {
       body.appendChild(
         buildMilestonesPanel(
           this.data,
-          (d) => this.save(d),
+          (d) => { void this.save(d); },
           () => {
             this.activePanel = null;
             this.render();
@@ -133,7 +125,7 @@ export class BoardView extends ItemView {
       body.appendChild(
         buildTagsPanel(
           this.data,
-          (d) => this.save(d),
+          (d) => { void this.save(d); },
           () => {
             this.activePanel = null;
             this.render();
@@ -213,9 +205,8 @@ export class BoardView extends ItemView {
     );
 
     const clearBtn = document.createElement("button");
-    clearBtn.className = "ms-btn ms-btn-ghost";
+    clearBtn.className = "ms-btn ms-btn-ghost ms-btn-clear";
     clearBtn.textContent = "✕ Clear";
-    clearBtn.style.fontSize = "11px";
     clearBtn.addEventListener("click", () => {
       this.filters = {
         search: "",
@@ -278,16 +269,16 @@ export class BoardView extends ItemView {
     // New task button
     const newTaskBtn = document.createElement("button");
     newTaskBtn.className = "ms-btn ms-btn-primary";
-    newTaskBtn.textContent = "＋ New Task";
+    newTaskBtn.textContent = "＋ New task";
     newTaskBtn.addEventListener("click", () => {
-      openTaskModal(this.data, (d) => this.save(d));
+      openTaskModal(this.data, (d) => { void this.save(d); });
     });
     bar.appendChild(newTaskBtn);
 
     // Settings button (after New Task)
     const settingsBtn = document.createElement("button");
     settingsBtn.className = "ms-btn ms-btn-icon";
-    settingsBtn.title = "Board Settings";
+    settingsBtn.title = "Board settings";
     settingsBtn.textContent = "⚙";
     settingsBtn.addEventListener("click", () => {
       openSettingsModal(this.plugin, this.data, (newFilters) => {
@@ -350,7 +341,13 @@ export class BoardView extends ItemView {
     stats.forEach(({ color, text }) => {
       const stat = document.createElement("div");
       stat.className = "ms-stat";
-      stat.innerHTML = `<span class="ms-dot" style="background:${color}"></span>${text}`;
+
+      const dot = document.createElement("span");
+      dot.className = "ms-dot";
+      dot.setCssProps({ "--ms-dot-bg": color });
+      stat.appendChild(dot);
+      stat.appendChild(document.createTextNode(text));
+
       bar.appendChild(stat);
     });
 
@@ -366,13 +363,13 @@ export class BoardView extends ItemView {
     this.data.columns.forEach((col) => {
       board.appendChild(
         buildColumn(col, this.data, this.filters, {
-          onDrop: (colId) => this.handleDrop(colId),
+          onDrop: (colId) => { void this.handleDrop(colId); },
           onAddCard: (colId) =>
-            openTaskModal(this.data, (d) => this.save(d), colId),
+            openTaskModal(this.data, (d) => { void this.save(d); }, colId),
           onEdit: (taskId) =>
-            openTaskModal(this.data, (d) => this.save(d), undefined, taskId),
+            openTaskModal(this.data, (d) => { void this.save(d); }, undefined, taskId),
           onDelete: (taskId) => {
-            this.save({
+            void this.save({
               ...this.data,
               tasks: this.data.tasks.filter((t) => t.id !== taskId),
             });
@@ -406,10 +403,10 @@ export class BoardView extends ItemView {
     overview.className = "ms-stats-row";
 
     const overviewCards = [
-      { label: "Total Tasks", value: String(total), color: "#4f6ef7", icon: "📋" },
+      { label: "Total tasks", value: String(total), color: "#4f6ef7", icon: "📋" },
       { label: "Completed", value: `${done} (${pct}%)`, color: "#10b981", icon: "✅" },
-      { label: "High Priority", value: String(tasks.filter((t) => t.priority === "high").length), color: "#ef4444", icon: "🔴" },
-      { label: "Team Members", value: String(this.data.users.length), color: "#5eead4", icon: "👥" },
+      { label: "High priority", value: String(tasks.filter((t) => t.priority === "high").length), color: "#ef4444", icon: "🔴" },
+      { label: "Team members", value: String(this.data.users.length), color: "#5eead4", icon: "👥" },
       { label: "Milestones", value: String(this.data.milestones.length), color: "#f59e0b", icon: "🏁" },
       { label: "Tags", value: String(this.data.tags.length), color: "#a855f7", icon: "🏷" },
     ];
@@ -417,11 +414,26 @@ export class BoardView extends ItemView {
     overviewCards.forEach(({ label, value, color, icon }) => {
       const card = document.createElement("div");
       card.className = "ms-stats-card";
-      card.innerHTML = `
-        <div class="ms-stats-card-icon" style="background:color-mix(in srgb, ${color} 15%, transparent);color:${color}">${icon}</div>
-        <div class="ms-stats-card-value">${value}</div>
-        <div class="ms-stats-card-label">${label}</div>
-      `;
+
+      const iconEl = document.createElement("div");
+      iconEl.className = "ms-stats-card-icon";
+      iconEl.setCssProps({
+        "--ms-icon-bg": `color-mix(in srgb, ${color} 15%, transparent)`,
+        "--ms-icon-color": color,
+      });
+      iconEl.textContent = icon;
+      card.appendChild(iconEl);
+
+      const valueEl = document.createElement("div");
+      valueEl.className = "ms-stats-card-value";
+      valueEl.textContent = value;
+      card.appendChild(valueEl);
+
+      const labelEl = document.createElement("div");
+      labelEl.className = "ms-stats-card-label";
+      labelEl.textContent = label;
+      card.appendChild(labelEl);
+
       overview.appendChild(card);
     });
     wrap.appendChild(overview);
@@ -430,9 +442,9 @@ export class BoardView extends ItemView {
     const chartsRow = document.createElement("div");
     chartsRow.className = "ms-stats-charts";
 
-    // Tasks by Column
+    // Tasks by column
     chartsRow.appendChild(this.buildBarChart(
-      "Tasks by Column",
+      "Tasks by column",
       this.data.columns.map((c) => ({
         label: c.label.replace(/^.+\s/, ""),
         value: tasks.filter((t) => t.col === c.id).length,
@@ -440,15 +452,15 @@ export class BoardView extends ItemView {
       })),
     ));
 
-    // Tasks by Priority
+    // Tasks by priority
     const priData = [
       { label: "High", value: tasks.filter((t) => t.priority === "high").length, color: "#ef4444" },
       { label: "Medium", value: tasks.filter((t) => t.priority === "medium").length, color: "#f59e0b" },
       { label: "Low", value: tasks.filter((t) => t.priority === "low").length, color: "#10b981" },
     ];
-    chartsRow.appendChild(this.buildBarChart("Tasks by Priority", priData));
+    chartsRow.appendChild(this.buildBarChart("Tasks by priority", priData));
 
-    // Tasks by Assignee
+    // Tasks by assignee
     const userCounts = this.data.users.map((u) => ({
       label: u.name,
       value: tasks.filter((t) => (t.assignees ?? []).includes(u.name)).length,
@@ -456,7 +468,7 @@ export class BoardView extends ItemView {
     })).sort((a, b) => b.value - a.value);
     const unassigned = tasks.filter((t) => !(t.assignees ?? []).length).length;
     if (unassigned > 0) userCounts.push({ label: "Unassigned", value: unassigned, color: "#6b7280" });
-    chartsRow.appendChild(this.buildBarChart("Tasks by Assignee", userCounts));
+    chartsRow.appendChild(this.buildBarChart("Tasks by assignee", userCounts));
 
     wrap.appendChild(chartsRow);
 
@@ -464,25 +476,24 @@ export class BoardView extends ItemView {
     const chartsRow2 = document.createElement("div");
     chartsRow2.className = "ms-stats-charts";
 
-    // Tasks by Milestone
+    // Tasks by milestone
     const mileCounts = [...this.data.milestones]
       .sort((a, b) => a.order - b.order)
       .map((m) => {
         const mTasks = tasks.filter((t) => t.milestone === m.name);
-        const mDone = mTasks.filter((t) => t.col === "done").length;
-        return { label: `${m.name}`, value: mTasks.length, color: m.color, done: mDone };
+        return { label: `${m.name}`, value: mTasks.length, color: m.color };
       });
     const noMile = tasks.filter((t) => !t.milestone).length;
-    if (noMile > 0) mileCounts.push({ label: "No milestone", value: noMile, color: "#6b7280", done: 0 });
-    chartsRow2.appendChild(this.buildBarChart("Tasks by Milestone", mileCounts));
+    if (noMile > 0) mileCounts.push({ label: "No milestone", value: noMile, color: "#6b7280" });
+    chartsRow2.appendChild(this.buildBarChart("Tasks by milestone", mileCounts));
 
-    // Tasks by Tag
+    // Tasks by tag
     const tagCounts = this.data.tags.map((tag) => ({
       label: `#${tag.name}`,
       value: tasks.filter((t) => t.tags?.includes(tag.name)).length,
       color: tag.color,
     })).sort((a, b) => b.value - a.value);
-    chartsRow2.appendChild(this.buildBarChart("Tasks by Tag", tagCounts.length > 0 ? tagCounts : [{ label: "No tags", value: 0, color: "#6b7280" }]));
+    chartsRow2.appendChild(this.buildBarChart("Tasks by tag", tagCounts.length > 0 ? tagCounts : [{ label: "No tags", value: 0, color: "#6b7280" }]));
 
     // Milestone progress
     const mileProgress = [...this.data.milestones]
@@ -493,7 +504,7 @@ export class BoardView extends ItemView {
         const mPct = mTasks.length ? Math.round((mDone / mTasks.length) * 100) : 0;
         return { label: m.label || m.name, value: mPct, color: m.color, suffix: "%" };
       });
-    chartsRow2.appendChild(this.buildBarChart("Milestone Progress", mileProgress.length > 0 ? mileProgress : [{ label: "No milestones", value: 0, color: "#6b7280" }]));
+    chartsRow2.appendChild(this.buildBarChart("Milestone progress", mileProgress.length > 0 ? mileProgress : [{ label: "No milestones", value: 0, color: "#6b7280" }]));
 
     wrap.appendChild(chartsRow2);
 
@@ -526,8 +537,10 @@ export class BoardView extends ItemView {
       barWrap.className = "ms-chart-bar-wrap";
       const bar = document.createElement("div");
       bar.className = "ms-chart-bar";
-      bar.style.width = `${Math.max((value / maxVal) * 100, 2)}%`;
-      bar.style.background = color;
+      bar.setCssProps({
+        "--ms-bar-width": `${Math.max((value / maxVal) * 100, 2)}%`,
+        "--ms-bar-bg": color,
+      });
       barWrap.appendChild(bar);
 
       const val = document.createElement("div");
@@ -545,12 +558,12 @@ export class BoardView extends ItemView {
 
   // Drag & Drop
 
-  private handleDrop(colId: string): void {
+  private async handleDrop(colId: string): Promise<void> {
     if (!this.dragId) return;
     const task = this.data.tasks.find((t) => t.id === this.dragId);
     if (task) {
       task.col = colId;
-      this.save({ ...this.data });
+      await this.save({ ...this.data });
     }
     this.dragId = null;
   }
